@@ -20,7 +20,7 @@ A complete, simplified Combined Cycle Gas Turbine (CCGT) power plant model achie
 
 ```bash
 # Clone repository
-git clone https://github.com/wongkiinging/CCGT_OpenModelica.git
+git clone https://github.com/kiinging/CCGT_OpenModelica.git
 cd CCGT_OpenModelica
 
 # Simulate complete CCGT
@@ -479,8 +479,8 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 
 ### Get Help
 
-- 🐛 **Bug Reports** - [GitHub Issues](https://github.com/wongkiinging/CCGT_OpenModelica/issues)
-- 💬 **Discussions** - [GitHub Discussions](https://github.com/wongkiinging/CCGT_OpenModelica/discussions)
+- 🐛 **Bug Reports** - [GitHub Issues](https://github.com/kiinging/CCGT_OpenModelica/issues)
+- 💬 **Discussions** - [GitHub Discussions](https://github.com/kiinging/CCGT_OpenModelica/discussions)
 - 📖 **Documentation** - Check `/docs` folder
 - 📧 **Email** - [your.email@example.com](mailto:your.email@example.com)
 
@@ -502,7 +502,7 @@ If you use this work in research or publications, please cite:
   title = {Complete Combined Cycle Gas Turbine Model in OpenModelica},
   author = {[Your Name]},
   year = {2026},
-  url = {https://github.com/wongkiinging/CCGT_OpenModelica},
+  url = {https://github.com/kiinging/CCGT_OpenModelica},
   version = {1.0},
   note = {Simplified CCGT model achieving 57.92\% efficiency}
 }
