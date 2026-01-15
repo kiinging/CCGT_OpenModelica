@@ -1,0 +1,58 @@
+# OpenModelica generated files
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.a
+*.log
+*_init.xml
+*_info.json
+*.c
+*.makefile
+*.libs
+*.json
+buildlog.txt
+
+# Result files (keep only reference results)
+results/*.mat
+!results/BraytonCycle_Dynamic_res.mat
+!results/BraytonCycleSimple_res.mat
+
+# Temporary simulation files
+*.tmpfiles
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Documentation build
+docs/_build/
+*.aux
+*.toc
+*.out
+
+# Plots (optional - remove if you want to track plots)
+# plots/*.png
+# !plots/README.md

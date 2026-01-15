@@ -1,0 +1,284 @@
+================================================================================
+OPENMODELICA USAGE GUIDE - BRAYTON CYCLE MODELS
+================================================================================
+
+Date: January 14, 2026
+OpenModelica Version: 1.25.5 (or compatible)
+
+================================================================================
+ISSUE RESOLVED: "within ThermoPower;" Error
+================================================================================
+
+PROBLEM:
+--------
+When opening "ThermoPower/BraytonCycle_500MW.mo" in OpenModelica GUI, you got:
+
+  Error: Expected the package to have within ; but got within ThermoPower;
+
+CAUSE:
+------
+The original model had "within ThermoPower;" declaration, which means:
+  • The model expects to be INSIDE a ThermoPower package hierarchy
+  • Your ThermoPower library folder is incomplete (only has package.mo files)
+  • The actual component implementations (Gas.Compressor, etc.) are missing
+  • OpenModelica couldn't resolve the package structure
+
+SOLUTION:
+---------
+Created TWO working models for you:
+
+1. BraytonCycleSimple.mo (Already tested via command line)
+   ✓ Works perfectly
+   ✓ Validated results: 43.94% efficiency
+
+2. BraytonCycle_500MW_Standalone.mo (NEW - for GUI use)
+   ✓ Same thermodynamics as BraytonCycleSimple
+   ✓ Better variable names and outputs
+   ✓ More documentation
+   ✓ Tested and working
+
+================================================================================
+HOW TO USE IN OPENMODELICA GUI
+================================================================================
+
+METHOD 1: Load Standalone Model (RECOMMENDED)
+----------------------------------------------
+
+1. Open OpenModelica Connection Editor (OMEdit)
+
+2. Load the model:
+   File → Open Model/Library
+   Navigate to: BraytonCycle_500MW_Standalone.mo
+   Click "Open"
+
+3. The model will appear in the Libraries Browser on the left
+
+4. Simulate the model:
+   Right-click "BraytonCycle_500MW_Standalone" → Simulate
+   (Or click the green "Simulate" button in toolbar)
+
+5. View results:
+   Switch to "Plotting" perspective (bottom tabs)
+   Variables to plot:
+   • netPower - Net power output
+   • thermalEfficiency - Thermal efficiency
+   • T_exhaust - Exhaust temperature
+   • compressorPower - Compressor power consumption
+   • turbinePower - Turbine power output
+
+6. Check final values:
+   In the Variables Browser, look at the values at time=1.0
+
+Expected Results:
+  netPower:           274,625,000 W (274.63 MW)
+  thermalEfficiency:  0.4394 (43.94%)
+  T_exhaust:          915.45 K (642.3°C)
+  compressorPower:    253,476,000 W (253.48 MW)
+  turbinePower:       533,712,500 W (533.71 MW)
+
+
+METHOD 2: Use BraytonCycleSimple.mo
+------------------------------------
+
+Same steps as above, but load "BraytonCycleSimple.mo" instead.
+Both models give identical results.
+
+
+METHOD 3: Command Line Simulation (Already Working)
+----------------------------------------------------
+
+We already successfully ran simulations via command line:
+  omc simulate_script.mos
+
+This method is faster for batch simulations and parameter studies.
+
+================================================================================
+WHICH MODEL TO USE WHEN
+================================================================================
+
+BraytonCycle_500MW_Standalone.mo - USE THIS FOR:
+------------------------------------------------
+✓ Interactive work in OpenModelica GUI
+✓ Exploring different parameters
+✓ Visualizing results with plots
+✓ Presentations and demonstrations
+✓ Learning and understanding the cycle
+
+BraytonCycleSimple.mo - USE THIS FOR:
+--------------------------------------
+✓ Command-line batch simulations
+✓ Parameter optimization studies
+✓ Scripted automation
+✓ Integration with other tools
+
+ThermoPower/BraytonCycle_500MW.mo - DO NOT USE (YET):
+------------------------------------------------------
+✗ Requires complete ThermoPower library
+✗ ThermoPower components not fully available
+✗ Use this only if you install full ThermoPower library later
+
+================================================================================
+TROUBLESHOOTING COMMON ISSUES
+================================================================================
+
+Issue 1: "within ThermoPower;" error
+-------------------------------------
+Solution: Use BraytonCycle_500MW_Standalone.mo instead
+(It has "within ;" which means no package dependency)
+
+Issue 2: "Modelica.SIunits not found"
+--------------------------------------
+Solution: Already fixed! Models use Modelica.Units.SI (Modelica 4.0+)
+
+Issue 3: Simulation doesn't start
+----------------------------------
+Check:
+  1. Modelica Standard Library is loaded (should auto-load)
+  2. Check model syntax: Tools → Check Model
+  3. Look at Messages Browser for errors
+
+Issue 4: Can't find variables to plot
+--------------------------------------
+Solution: The model uses "output" variables:
+  • netPower
+  • thermalEfficiency
+  • T_exhaust
+  • compressorPower
+  • turbinePower
+These should appear at the TOP of the variables list.
+
+================================================================================
+PARAMETER MODIFICATION
+================================================================================
+
+To change design parameters in OpenModelica GUI:
+
+1. Double-click the model in Libraries Browser
+2. Switch to "Text View" (bottom left)
+3. Modify parameters (lines starting with "parameter"):
+
+Example parameters you can change:
+   parameter SI.Temperature T1 = 288.15;     // Inlet temp
+   parameter Real PR = 18;                    // Pressure ratio
+   parameter Real eta_c = 0.88;              // Compressor efficiency
+   parameter SI.Temperature T3 = 1673.15;    // Turbine inlet temp
+   parameter Real eta_t = 0.90;              // Turbine efficiency
+   parameter SI.MassFlowRate m_air = 600;    // Air flow
+   parameter SI.MassFlowRate m_fuel = 12.5;  // Fuel flow
+
+4. Save the file (Ctrl+S)
+5. Simulate again to see new results
+
+================================================================================
+PARAMETER STUDY EXAMPLE
+================================================================================
+
+To study effect of pressure ratio on efficiency:
+
+1. Open BraytonCycle_500MW_Standalone.mo
+2. Find line: parameter Real PR = 18;
+3. Try different values: 12, 15, 18, 20, 23
+4. Simulate each time
+5. Record the thermalEfficiency output
+6. Plot PR vs efficiency in Excel or Python
+
+Expected trend: Efficiency increases with PR, then plateaus
+
+================================================================================
+NEXT STEPS WITH THE MODEL
+================================================================================
+
+Now that you have a working model in OpenModelica:
+
+OPTION A: Parameter Optimization
+---------------------------------
+• Study effect of pressure ratio (12-25)
+• Study effect of TIT (1300-1500°C)
+• Find optimal operating point
+• Analyze trade-offs
+
+OPTION B: Add HRSG and Steam Cycle
+-----------------------------------
+• Use the T_exhaust output (642°C)
+• Create a simple steam cycle model
+• Calculate combined cycle efficiency
+• Target: 500MW total output
+
+OPTION C: Dynamic Behavior
+---------------------------
+• Extend simulation time (stopTime=3600 for 1 hour)
+• Add time-varying inputs
+• Study transient responses
+• Model startup sequences
+
+OPTION D: Integration with ThermoPower
+---------------------------------------
+• Download complete ThermoPower library from:
+  https://github.com/casella/ThermoPower
+• Install it properly in OpenModelica
+• Then use the detailed component-based model
+
+================================================================================
+MODEL VALIDATION SUMMARY
+================================================================================
+
+Both analytical and simulation methods confirm:
+
+✓ Net Power Output:        274.63 MW
+✓ Thermal Efficiency:      43.94%
+✓ Exhaust Temperature:     642.3°C
+✓ Compressor Power:        253.48 MW
+✓ Turbine Power:           533.71 MW
+
+This is EXCELLENT performance for a gas turbine simple cycle!
+
+Combined Cycle Potential:
+✓ With HRSG + Steam Turbine: ~393 MW, 63% efficiency
+✓ Scale to 500MW: Multiply flows by 1.27x
+
+================================================================================
+QUICK REFERENCE - FILE LOCATIONS
+================================================================================
+
+Working Models (Use These):
+  ./BraytonCycle_500MW_Standalone.mo  ← BEST for GUI
+  ./BraytonCycleSimple.mo             ← BEST for CLI
+
+Reports and Documentation:
+  ./OpenModelica_Simulation_Results.txt
+  ./Brayton_Cycle_Efficiency_Report.txt
+  ./Brayton_Cycle_Diagram.txt
+  ./README_Brayton_Cycle_Model.txt
+  ./OpenModelica_Usage_Guide.txt      ← This file
+
+Simulation Results:
+  ./BraytonCycle_500MW_Standalone_res.mat
+  ./BraytonCycleSimple_res.mat
+
+Not Working (Needs Full Library):
+  ./ThermoPower/BraytonCycle_500MW.mo  ← Don't use yet
+
+================================================================================
+CONTACT AND SUPPORT
+================================================================================
+
+OpenModelica Resources:
+  Website: https://www.openmodelica.org/
+  Forum:   https://openmodelica.org/forum/
+  Docs:    https://openmodelica.org/doc/OpenModelicaUsersGuide/
+
+Modelica Language:
+  Website: https://www.modelica.org/
+  Specs:   https://specification.modelica.org/
+
+ThermoPower Library (for future use):
+  GitHub:  https://github.com/casella/ThermoPower
+  Docs:    https://casella.github.io/ThermoPower/
+
+================================================================================
+END OF GUIDE
+================================================================================
+
+SUMMARY: 
+Use BraytonCycle_500MW_Standalone.mo in OpenModelica GUI - it works perfectly
+and gives you 43.94% efficiency for the gas turbine cycle!

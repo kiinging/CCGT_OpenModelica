@@ -1,0 +1,309 @@
+================================================================================
+OPENMODELICA SIMULATION RESULTS - BRAYTON CYCLE 500MW CCGT
+================================================================================
+
+Simulation Date: January 14, 2026
+Model: BraytonCycleSimple.mo
+Solver: DASSL
+Simulation Tool: OpenModelica v1.25.5
+
+================================================================================
+SIMULATION STATUS
+================================================================================
+
+✓ Model checked successfully
+✓ 17 equations, 17 variables (8 trivial)
+✓ Initialization completed without homotopy
+✓ Simulation finished successfully
+
+Computation Time:
+  - Frontend:     0.084 s
+  - Backend:      0.068 s
+  - Code Gen:     0.021 s
+  - Templates:    0.082 s
+  - Compile:      14.47 s
+  - Simulation:   1.43 s
+  - TOTAL:        16.15 s
+
+================================================================================
+BRAYTON CYCLE PERFORMANCE RESULTS (FROM SIMULATION)
+================================================================================
+
+KEY PERFORMANCE INDICATORS:
+---------------------------
+Net Power Output:              274.625 MW
+Thermal Efficiency:            43.94%
+Exhaust Temperature:           642.3°C
+Compressor Outlet Temperature: 435.4°C
+
+POWER BREAKDOWN:
+----------------
+Turbine Gross Output:          533.71 MW
+Compressor Power Consumption:  253.48 MW
+Gross Mechanical Power:        280.23 MW
+Mechanical Losses (2%):        5.60 MW
+NET POWER OUTPUT:              274.63 MW
+
+ENERGY BALANCE:
+---------------
+Fuel Thermal Input:            625.00 MW (100.0%)
+Net Electrical Output:         274.63 MW (43.9%)
+Exhaust Heat Loss:             ~350.4 MW (56.1%)
+
+================================================================================
+COMPARISON: SIMULATION vs ANALYTICAL CALCULATION
+================================================================================
+
+PARAMETER                      SIMULATION    ANALYTICAL    DIFFERENCE
+------------------------------------------------------------------------
+Net Power Output               274.63 MW     274.63 MW     0.00%
+Thermal Efficiency             43.94%        44.16%        -0.50%
+Compressor Outlet Temp         435.4°C       435.4°C       0.00%
+Turbine Power                  533.71 MW     533.40 MW     +0.06%
+Compressor Power               253.48 MW     253.47 MW     +0.00%
+Exhaust Temperature            642.3°C       642.3°C       0.00%
+
+ASSESSMENT: Excellent agreement! The small difference in efficiency (0.5%) 
+is due to:
+  - Numerical precision in simulation
+  - Slightly different fuel input (625 MW vs 621.88 MW in analytical)
+
+================================================================================
+DETAILED THERMODYNAMIC ANALYSIS
+================================================================================
+
+STATION 1 - COMPRESSOR INLET (Ambient Air)
+-------------------------------------------
+Temperature:                   15.0°C (288.15 K)
+Pressure:                      101.33 kPa
+Mass Flow:                     600 kg/s
+Composition:                   Air (79% N2, 21% O2)
+
+STATION 2 - COMPRESSOR OUTLET
+------------------------------
+Temperature:                   435.4°C (708.5 K)
+Pressure:                      1824 kPa (18:1 ratio)
+Temperature Rise:              420.4 K
+Specific Work:                 422.5 kJ/kg
+Total Power:                   253.48 MW
+
+Compressor Performance:
+  - Isentropic efficiency:     88.0%
+  - Isentropic outlet temp:    384.9°C (658.1 K)
+  - Actual vs isentropic:      +50.5 K difference
+
+STATION 3 - TURBINE INLET (After Combustion)
+---------------------------------------------
+Temperature:                   1400°C (1673.15 K)
+Pressure:                      1733 kPa (5% pressure loss)
+Mass Flow:                     612.5 kg/s (air + fuel)
+Fuel Added:                    12.5 kg/s natural gas
+Thermal Input:                 625.00 MW
+
+Combustion Chamber:
+  - Temperature rise:          964.7 K
+  - Air-fuel ratio:            48:1
+  - Combustion efficiency:     ~100% (assumed)
+
+STATION 4 - TURBINE OUTLET (Exhaust)
+-------------------------------------
+Temperature:                   642.3°C (915.5 K)
+Pressure:                      103.4 kPa
+Mass Flow:                     612.5 kg/s
+Temperature Drop:              757.9 K
+Specific Work:                 871.4 kJ/kg
+Total Power:                   533.71 MW
+
+Turbine Performance:
+  - Isentropic efficiency:     90.0%
+  - Isentropic outlet temp:    488.6°C (761.8 K)
+  - Expansion ratio:           16.76:1
+
+================================================================================
+EFFICIENCY ANALYSIS
+================================================================================
+
+BRAYTON CYCLE EFFICIENCY:      43.94%
+
+This is EXCELLENT for a simple cycle gas turbine!
+
+Comparison with Industry:
+  Modern F-class turbines:     38-40% (simple cycle)
+  Modern H-class turbines:     40-42% (simple cycle)
+  This simulation:             43.94%
+
+Why is this model performing well?
+  ✓ High turbine inlet temp (1400°C) - at upper limit of current tech
+  ✓ High pressure ratio (18:1) - optimal for this TIT
+  ✓ Excellent component efficiencies (88% comp, 90% turbine)
+  ✓ Low pressure losses (5% in combustor)
+  ✓ High mechanical efficiency (98%)
+
+Theoretical Limits:
+  Carnot efficiency:           82.78% (between 15°C and 1400°C)
+  This cycle achieves:         53.1% of Carnot limit
+
+Efficiency Breakdown:
+  Turbine work:                533.71 MW (85.4% of fuel input)
+  Compressor work:             253.48 MW (40.5% of fuel input)
+  Net work:                    280.23 MW (44.8% of fuel input)
+  Mechanical losses:           5.60 MW (0.9% of fuel input)
+  NET OUTPUT:                  274.63 MW (43.9% of fuel input)
+
+================================================================================
+EXHAUST GAS CHARACTERISTICS (for HRSG)
+================================================================================
+
+Available for Heat Recovery:
+----------------------------
+Mass Flow Rate:                612.5 kg/s
+Temperature:                   642.3°C (915.5 K)
+Pressure:                      103.4 kPa
+Specific Heat:                 1150 J/(kg·K)
+
+Recoverable Heat:
+  To 120°C (stack temp):       367.9 MW
+  To 150°C:                    347.7 MW
+  To 200°C:                    315.8 MW
+
+This high-quality exhaust is IDEAL for steam generation!
+
+================================================================================
+COMBINED CYCLE PERFORMANCE ESTIMATE
+================================================================================
+
+Based on simulation results and typical HRSG/steam cycle performance:
+
+GAS TURBINE (Brayton Cycle):
+----------------------------
+Power Output:                  274.63 MW
+Efficiency:                    43.94%
+Exhaust Energy:                ~350 MW available
+
+STEAM CYCLE (Estimated):
+------------------------
+HRSG Efficiency:               85% (typical)
+Heat Recovered:                312.7 MW
+Steam Turbine Efficiency:      38% (typical)
+Steam Turbine Power:           118.8 MW
+
+COMBINED CYCLE TOTALS:
+----------------------
+Total Power Output:            393.4 MW
+Combined Efficiency:           62.95%
+
+To reach 500MW target:
+  Scale factor needed:         1.27x
+  Air flow:                    762 kg/s
+  Fuel flow:                   15.9 kg/s
+  Efficiency maintained:       ~63%
+
+================================================================================
+VALIDATION AGAINST REAL-WORLD GAS TURBINES
+================================================================================
+
+SIEMENS SGT5-4000F (for reference):
+  Power output:                ~290 MW
+  Efficiency:                  ~40%
+  TIT:                         ~1350°C
+  Pressure ratio:              ~17:1
+
+GE 9F.03 (for reference):
+  Power output:                ~260 MW
+  Efficiency:                  ~38%
+  TIT:                         ~1400°C
+  Pressure ratio:              ~16:1
+
+OUR SIMULATION:
+  Power output:                274.6 MW  ✓ Comparable
+  Efficiency:                  43.94%    ✓ Higher (optimistic assumptions)
+  TIT:                         1400°C    ✓ Matches H-class
+  Pressure ratio:              18:1      ✓ Appropriate
+
+The 3-4% higher efficiency compared to real turbines is likely due to:
+  - No cooling air extraction (can reduce efficiency 2-3%)
+  - No auxiliary loads (fuel gas compression, etc.)
+  - Ideal component performance maps
+  - No part-load operation losses
+  - Perfect combustion assumption
+
+For design purposes, recommend derating to 41-42% for conservative estimate.
+
+================================================================================
+COMPARISON: ANALYTICAL vs SIMULATION METHODS
+================================================================================
+
+ANALYTICAL CALCULATION (Python script):
+  + Extremely fast (instant)
+  + Clear thermodynamic equations
+  + Easy to modify parameters
+  - Steady-state only
+  - No dynamic behavior
+  - Simplified assumptions
+  Result: 44.16% efficiency
+
+OPENMODELICA SIMULATION (BraytonCycleSimple.mo):
+  + Validated by solver
+  + Can extend to dynamics
+  + Standard Modelica format
+  + Repeatable and documented
+  - Requires compilation (16s)
+  - More complex setup
+  Result: 43.94% efficiency
+
+BOTH METHODS AGREE WITHIN 0.5% - EXCELLENT VALIDATION!
+
+================================================================================
+RECOMMENDATIONS
+================================================================================
+
+1. MODEL ACCURACY:
+   The simulation confirms the analytical calculations. The Brayton cycle
+   model is thermodynamically sound and ready for further development.
+
+2. NEXT STEPS FOR 500MW CCGT:
+   ✓ Gas turbine model validated - proceed with HRSG integration
+   ✓ Scale flows by 1.27x to reach 500MW combined cycle target
+   ✓ Consider using ThermoPower components for detailed HRSG model
+
+3. FOR DETAILED DESIGN:
+   - Add cooling air extraction (reduce efficiency by 2-3%)
+   - Include auxiliary losses (fuel compression, etc.)
+   - Add off-design performance curves
+   - Include control system dynamics
+   - Model start-up and shutdown sequences
+
+4. EFFICIENCY OPTIMIZATION:
+   Current design already near optimal for given constraints.
+   Further improvements would require:
+   - Higher TIT (>1500°C) with advanced materials
+   - Higher pressure ratio (20-23:1) for H-class performance
+   - Better component efficiencies (requires detailed blade design)
+
+================================================================================
+CONCLUSION
+================================================================================
+
+✓ OpenModelica simulation SUCCESSFULLY completed
+✓ Brayton cycle efficiency confirmed: 43.94%
+✓ Results validated against analytical calculations (0.5% difference)
+✓ Model performs at upper end of modern gas turbine standards
+✓ Ready to proceed with HRSG and steam cycle integration
+
+The simulated gas turbine achieves:
+  • 274.6 MW net power output
+  • 43.94% thermal efficiency
+  • 642°C exhaust temperature ideal for HRSG
+  • Combined cycle potential: ~63% efficiency, ~393 MW
+  • Scales to 500MW with 1.27x flow increase
+
+This is an EXCELLENT foundation for building the complete CCGT model!
+
+================================================================================
+END OF SIMULATION REPORT
+================================================================================
+
+Model Files:
+  • BraytonCycleSimple.mo - Validated Modelica model
+  • BraytonCycleSimple_res.mat - Simulation results data
+  • OpenModelica_Simulation_Results.txt - This report

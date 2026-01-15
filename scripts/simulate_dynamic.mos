@@ -1,0 +1,35 @@
+// OpenModelica Script to Simulate Dynamic Brayton Cycle
+// Run this with: omc simulate_dynamic.mos
+
+loadModel(Modelica);
+getErrorString();
+
+// Load the model
+loadFile("../models/BraytonCycle_Dynamic.mo");
+getErrorString();
+
+// Check model
+checkModel(BraytonCycle_Dynamic);
+getErrorString();
+
+// Simulate
+simulate(BraytonCycle_Dynamic, startTime=0, stopTime=1000, numberOfIntervals=1000, tolerance=1e-6);
+getErrorString();
+
+// Extract key results
+print("\n=== SIMULATION RESULTS ===\n");
+print("At 60% Load (t=100s):\n");
+print("  Power: " + String(val(netPower, 100)/1e6) + " MW\n");
+print("  Efficiency: " + String(val(thermalEfficiency, 100)*100) + " %\n\n");
+
+print("At 100% Load (t=300s):\n");
+print("  Power: " + String(val(netPower, 300)/1e6) + " MW\n");
+print("  Efficiency: " + String(val(thermalEfficiency, 300)*100) + " %\n\n");
+
+print("At 120% Load (t=500s):\n");
+print("  Power: " + String(val(netPower, 500)/1e6) + " MW\n");
+print("  Efficiency: " + String(val(thermalEfficiency, 500)*100) + " %\n\n");
+
+print("Results saved to: BraytonCycle_Dynamic_res.mat\n");
+
+quit();

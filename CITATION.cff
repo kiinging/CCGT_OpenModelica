@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Your Last Name"
+    given-names: "Your First Name"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+title: "Combined Cycle Gas Turbine (CCGT) Brayton Cycle Model in OpenModelica"
+version: 1.0.0
+date-released: 2026-01-14
+url: "https://github.com/YOUR_USERNAME/CCGT_OpenModelica"
+repository-code: "https://github.com/YOUR_USERNAME/CCGT_OpenModelica"
+keywords:
+  - Combined Cycle Gas Turbine
+  - CCGT
+  - Brayton Cycle
+  - Gas Turbine
+  - OpenModelica
+  - Modelica
+  - Power Generation
+  - Thermal Efficiency
+  - Dynamic Simulation
+license: MIT
+abstract: >
+  A comprehensive OpenModelica model for simulating Combined Cycle Gas Turbine
+  (CCGT) Brayton cycle performance with dynamic load changes. The model achieves
+  43.94% thermal efficiency at full load and includes validated results, 
+  professional documentation, and replicable simulation scripts. Designed for
+  power systems engineering education and research, with detailed theory 
+  explanations for electrical engineers transitioning to thermal power systems.

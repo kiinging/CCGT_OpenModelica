@@ -1,0 +1,83 @@
+// Simulate Complete CCGT Model
+// THIS VERSION IS FOR RUNNING IN OMEDIT GUI
+// For command line, use: simulate_ccgt.mos
+
+loadModel(Modelica);
+getErrorString();
+
+// Load model - path relative to CCGT_OpenModelica root directory
+// OMEdit runs scripts from project root, not from scripts/ folder
+cd("models");
+loadFile("CCGT_Complete_Simple.mo");
+cd("..");
+getErrorString();
+
+checkModel(CCGT_Complete_Simple);
+getErrorString();
+
+simulate(CCGT_Complete_Simple, stopTime=1);
+getErrorString();
+
+print("\n========================================================================\n");
+print("   COMPLETE CCGT SIMULATION RESULTS\n");
+print("========================================================================\n\n");
+
+print("GAS TURBINE (Brayton Cycle):\n");
+print("────────────────────────────\n");
+print("  Net Power Output:        " + String(val(gasTurbinePower,1)/1e6) + " MW\n");
+print("  Compressor Power:        " + String(val(W_compressor,1)/1e6) + " MW\n");
+print("  Turbine Power:           " + String(val(W_gas_turbine,1)/1e6) + " MW\n");
+print("  Simple Cycle Efficiency: " + String(val(eta_gas_simple,1)*100) + " %\n");
+print("  Exhaust Temperature:     " + String(val(T_gas_turbine_out,1)-273.15) + " °C\n\n");
+
+print("HRSG (Heat Recovery):\n");
+print("────────────────────────────\n");
+print("  HP Steam Production:     " + String(val(m_steam_HP,1)) + " kg/s\n");
+print("  IP Steam Production:     " + String(val(m_steam_IP,1)) + " kg/s\n");
+print("  LP Steam Production:     " + String(val(m_steam_LP,1)) + " kg/s\n");
+print("  Total Steam:             " + String(val(totalSteamProduction,1)) + " kg/s\n");
+print("  Heat Recovered:          " + String(val(Q_HRSG_total,1)/1e6) + " MW\n");
+print("  Stack Temperature:       " + String(val(stackTemperature,1)-273.15) + " °C\n\n");
+
+print("STEAM TURBINE (Rankine Cycle):\n");
+print("────────────────────────────\n");
+print("  HP Turbine Power:        " + String(val(W_steam_HP,1)/1e6) + " MW\n");
+print("  IP Turbine Power:        " + String(val(W_steam_IP,1)/1e6) + " MW\n");
+print("  LP Turbine Power:        " + String(val(W_steam_LP,1)/1e6) + " MW\n");
+print("  Net Steam Power:         " + String(val(steamTurbinePower,1)/1e6) + " MW\n\n");
+
+print("CONDENSER:\n");
+print("────────────────────────────\n");
+print("  Heat Rejected:           " + String(val(Q_rejected,1)/1e6) + " MW\n");
+print("  Cooling Water Flow:      " + String(val(m_cooling_water,1)) + " kg/s\n\n");
+
+print("========================================================================\n");
+print("   OVERALL COMBINED CYCLE PERFORMANCE\n");
+print("========================================================================\n\n");
+
+print("  Gas Turbine Output:      " + String(val(gasTurbinePower,1)/1e6) + " MW\n");
+print("  Steam Turbine Output:    " + String(val(steamTurbinePower,1)/1e6) + " MW\n");
+print("  ═══════════════════════════════════════════════════\n");
+print("  TOTAL CCGT POWER:        " + String(val(totalPower,1)/1e6) + " MW\n");
+print("  ═══════════════════════════════════════════════════\n\n");
+
+print("  Fuel Thermal Input:      " + String(val(Q_fuel_input,1)/1e6) + " MW\n");
+print("  COMBINED EFFICIENCY:     " + String(val(combinedEfficiency,1)*100) + " %\n");
+print("  Power Split (Gas/Steam): " + String(val(power_split_ratio,1)) + ":1\n\n");
+
+print("  Improvement over simple cycle: " + 
+      String((val(combinedEfficiency,1) - val(eta_gas_simple,1))*100) + " percentage points\n\n");
+
+print("========================================================================\n");
+print("   TO REACH 500 MW TARGET\n");
+print("========================================================================\n\n");
+
+print("  Current Output:          " + String(val(totalPower,1)/1e6) + " MW\n");
+print("  Target:                  500 MW\n");
+print("  Scale Factor Needed:     " + String(500/(val(totalPower,1)/1e6)) + "×\n");
+print("  (Multiply all mass flows by this factor)\n\n");
+
+print("========================================================================\n\n");
+
+// Note: Do NOT use quit() in OMEdit - it will close the application!
+// quit(); // Only for command line!
