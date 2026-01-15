@@ -7,7 +7,7 @@ model Condenser_Simple "Simplified Steam Condenser"
   // INPUT PARAMETERS
   // ============================================================================
   
-  parameter SI.MassFlowRate m_steam_in = 612 "Steam inlet mass flow [kg/s]";
+  parameter SI.MassFlowRate m_steam_in = 95.3 "Steam inlet mass flow [kg/s] (from SteamTurbine)";
   parameter SI.Temperature T_steam_in = 306.15 "Steam inlet temperature [K] (33°C)";
   parameter SI.Pressure P_condenser = 5000 "Condenser pressure [Pa] (0.05 bar vacuum)";
   
@@ -59,9 +59,6 @@ equation
   
   // Heat released by steam condensing
   Q_rejected = m_steam_in * (h_steam_in - h_cond_water);
-  
-  // Heat absorbed by cooling water
-  Q_rejected = m_cooling * cp_water * (T_cooling_out - T_cooling_in);
   
   // Cooling water flow rate (from energy balance)
   m_cooling = Q_rejected / (cp_water * (T_cooling_out - T_cooling_in));

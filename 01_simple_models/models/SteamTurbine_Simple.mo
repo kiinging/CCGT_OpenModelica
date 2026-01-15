@@ -7,18 +7,18 @@ model SteamTurbine_Simple "Simplified Steam Turbine (HP-IP-LP)"
   // INPUT PARAMETERS (from HRSG)
   // ============================================================================
   
-  // High Pressure (HP) Steam Input
-  parameter SI.MassFlowRate m_HP = 245 "HP steam mass flow [kg/s]";
+  // High Pressure (HP) Steam Input (FROM HRSG)
+  parameter SI.MassFlowRate m_HP = 33.5 "HP steam mass flow [kg/s] (from HRSG)";
   parameter SI.Temperature T_HP_in = 813.15 "HP steam inlet temp [K] (540°C)";
   parameter SI.Pressure P_HP_in = 80e5 "HP steam inlet pressure [Pa] (80 bar)";
   
-  // Intermediate Pressure (IP) Steam Input
-  parameter SI.MassFlowRate m_IP = 214 "IP steam mass flow [kg/s]";
+  // Intermediate Pressure (IP) Steam Input (FROM HRSG)
+  parameter SI.MassFlowRate m_IP = 28.4 "IP steam mass flow [kg/s] (from HRSG)";
   parameter SI.Temperature T_IP_in = 673.15 "IP steam inlet temp [K] (400°C)";
   parameter SI.Pressure P_IP_in = 20e5 "IP steam inlet pressure [Pa] (20 bar)";
   
-  // Low Pressure (LP) Steam Input
-  parameter SI.MassFlowRate m_LP = 153 "LP steam mass flow [kg/s]";
+  // Low Pressure (LP) Steam Input (FROM HRSG)
+  parameter SI.MassFlowRate m_LP = 33.4 "LP steam mass flow [kg/s] (from HRSG)";
   parameter SI.Temperature T_LP_in = 523.15 "LP steam inlet temp [K] (250°C)";
   parameter SI.Pressure P_LP_in = 5e5 "LP steam inlet pressure [Pa] (5 bar)";
   

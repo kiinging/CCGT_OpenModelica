@@ -140,53 +140,40 @@ equation
   // ============================================================================
   // Hot gas enters, cools while heating water to high-pressure steam
   
+  // Assume gas temperature drop in HP section
+  T_gas_HP_out = T_gas_in - 200;  // Gas cools by ~200K in HP section
+  
   // Heat available from gas
   Q_HP = eta_HP * m_gas * cp_gas * (T_gas_in - T_gas_HP_out);
   
-  // Heat absorbed by water/steam
-  Q_HP = m_steam_HP * (h_steam_HP_out - h_water_HP_in);
-  
-  // Gas outlet temperature (based on energy balance)
-  T_gas_HP_out = T_gas_in - Q_HP / (m_gas * cp_gas);
-  
-  // Steam production (simplified - allocate 40% of gas flow energy to HP)
-  m_steam_HP = 0.40 * m_gas * cp_gas * (T_gas_in - T_gas_HP_out) / 
-                (h_steam_HP_out - h_water_HP_in);
+  // Steam production from heat balance
+  m_steam_HP = Q_HP / (h_steam_HP_out - h_water_HP_in);
   
   // ============================================================================
   // INTERMEDIATE PRESSURE (IP) SECTION
   // ============================================================================
   
+  // Assume gas temperature drop in IP section
+  T_gas_IP_out = T_gas_HP_out - 150;  // Gas cools by ~150K in IP section
+  
   // Heat available from gas
   Q_IP = eta_IP * m_gas * cp_gas * (T_gas_HP_out - T_gas_IP_out);
   
-  // Heat absorbed by water/steam
-  Q_IP = m_steam_IP * (h_steam_IP_out - h_water_IP_in);
-  
-  // Gas outlet temperature
-  T_gas_IP_out = T_gas_HP_out - Q_IP / (m_gas * cp_gas);
-  
-  // Steam production (allocate 35% to IP)
-  m_steam_IP = 0.35 * m_gas * cp_gas * (T_gas_HP_out - T_gas_IP_out) / 
-                (h_steam_IP_out - h_water_IP_in);
+  // Steam production from heat balance
+  m_steam_IP = Q_IP / (h_steam_IP_out - h_water_IP_in);
   
   // ============================================================================
   // LOW PRESSURE (LP) SECTION
   // ============================================================================
   
+  // Set stack temperature to target
+  T_gas_LP_out = T_stack_target;  // Stack at 120°C
+  
   // Heat available from gas
   Q_LP = eta_LP * m_gas * cp_gas * (T_gas_IP_out - T_gas_LP_out);
   
-  // Heat absorbed by water/steam
-  Q_LP = m_steam_LP * (h_steam_LP_out - h_water_LP_in);
-  
-  // Gas outlet temperature (stack)
-  T_gas_LP_out = max(T_stack_target, 
-                     T_gas_IP_out - Q_LP / (m_gas * cp_gas));
-  
-  // Steam production (remaining energy to LP)
-  m_steam_LP = 0.25 * m_gas * cp_gas * (T_gas_IP_out - T_gas_LP_out) / 
-                (h_steam_LP_out - h_water_LP_in);
+  // Steam production from heat balance
+  m_steam_LP = Q_LP / (h_steam_LP_out - h_water_LP_in);
   
   // ============================================================================
   // OVERALL PERFORMANCE
