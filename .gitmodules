@@ -1,0 +1,3 @@
+[submodule "ThermoPower"]
+	path = ThermoPower
+	url = https://github.com/casella/ThermoPower.git
