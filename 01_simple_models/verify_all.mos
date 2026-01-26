@@ -1,0 +1,28 @@
+loadModel(Modelica);
+// We are running from 01_simple_models/
+print("\nCurrent directory: " + cd() + "\n");
+
+print("\n--- Simulating BraytonCycle_Simple ---");
+loadFile("models/BraytonCycle_Simple.mo");
+simulate(BraytonCycleSimple, stopTime=1);
+getErrorString();
+
+print("\n--- Simulating HRSG_Simple ---");
+loadFile("models/HRSG_Simple.mo");
+simulate(HRSG_Simple, stopTime=1);
+getErrorString();
+
+print("\n--- Simulating SteamTurbine_Simple ---");
+loadFile("models/SteamTurbine_Simple.mo");
+simulate(SteamTurbine_Simple, stopTime=1);
+getErrorString();
+
+print("\n--- Simulating Condenser_Simple ---");
+loadFile("models/Condenser_Simple.mo");
+simulate(Condenser_Simple, stopTime=1);
+getErrorString();
+
+print("\n--- Simulating CCGT_Complete_Simple ---");
+loadFile("models/CCGT_Complete_Simple.mo");
+simulate(CCGT_Complete_Simple, stopTime=1);
+getErrorString();

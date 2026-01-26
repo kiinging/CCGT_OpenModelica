@@ -1,0 +1,7 @@
+loadModel(Modelica);
+print("\nCurrent directory: " + cd() + "\n");
+
+print("\n--- Simulating CCGT_500MW_Simple ---");
+loadFile("models/CCGT_500MW_Simple.mo");
+simulate(CCGT_500MW_Simple, stopTime=1);
+getErrorString();
