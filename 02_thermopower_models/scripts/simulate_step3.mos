@@ -1,0 +1,49 @@
+// Simulate Step3 Gas Turbine with ThermoPower
+print("\n================================================================================\n");
+print("STEP 3: GAS TURBINE WITH THERMOPOWER COMPONENTS\n");
+print("================================================================================\n\n");
+
+print("Loading libraries...\n");
+loadModel(Modelica);
+loadFile("ThermoPower/package.mo");
+
+print("Loading model...\n");
+loadFile("02_thermopower_models/models/Step3_GasTurbine_ThermoPower.mo");
+
+print("Starting simulation (this may take 1-2 minutes)...\n");
+print("Please be patient - ThermoPower solves dynamic equations!\n\n");
+
+simulate(Step3_GasTurbine_ThermoPower, startTime=0, stopTime=2000, tolerance=1e-6);
+
+errors := getErrorString();
+print("\nSimulation messages:\n");
+print(errors);
+print("\n");
+
+// Try to get results
+print("================================================================================\n");
+print("ATTEMPTING TO READ RESULTS\n");
+print("================================================================================\n\n");
+
+// Check if simulation succeeded
+if regexBool(errors, "Simulation execution failed") then
+  print("✗ Simulation failed. Check errors above.\n\n");
+else
+  print("Trying to extract results...\n");
+  
+  // Try to get power output
+  power := val(powerSensor.W, 2000);
+  print("Power at t=2000s: " + String(power/1e6) + " MW\n");
+  
+  print("\nIf you see a reasonable power value (100-400 MW), simulation worked!\n");
+  print("Open model in OMEdit to see diagram view and plot variables.\n\n");
+end if;
+
+print("================================================================================\n");
+print("NEXT STEPS:\n");
+print("1. Open OMEdit\n");
+print("2. Load ThermoPower library\n");
+print("3. Open Step3_GasTurbine_ThermoPower.mo\n");
+print("4. Click 'Diagram View' icon\n");
+print("5. You should see component layout!\n");
+print("================================================================================\n\n");

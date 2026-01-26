@@ -1,0 +1,14 @@
+// Check ThermoPower component parameters
+loadModel(Modelica);
+loadFile("ThermoPower/package.mo");
+
+print("\n=== Checking ThermoPower.Gas.SourcePressure ===\n");
+getComponents(ThermoPower.Gas.SourcePressure);
+
+print("\n=== Checking ThermoPower.Gas.SinkPressure ===\n");
+getComponents(ThermoPower.Gas.SinkPressure);
+
+print("\n=== Checking ThermoPower.Gas.Compressor ===\n");
+getComponents(ThermoPower.Gas.Compressor);
+
+print("\nDone checking components.\n");

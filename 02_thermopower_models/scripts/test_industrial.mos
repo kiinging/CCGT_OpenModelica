@@ -1,0 +1,130 @@
+// Test Industrial-Standard Gas Turbine Model
+
+print("\n================================================================================\n");
+print("STEP 2B: INDUSTRIAL-STANDARD GAS TURBINE MODEL\n");
+print("================================================================================\n\n");
+
+print("Loading Modelica...\n");
+loadModel(Modelica);
+
+print("Loading Step2B_GasTurbine_Industrial.mo...\n");
+loaded := loadFile("02_thermopower_models/models/Step2B_GasTurbine_Industrial.mo");
+
+if not loaded then
+  print("✗ ERROR: Could not load model\n");
+  exit(1);
+end if;
+
+print("✓ Model loaded\n");
+print("\nSimulating industrial-standard gas turbine...\n");
+
+simulate(Step2B_GasTurbine_Industrial, stopTime=1, tolerance=1e-6);
+
+errors := getErrorString();
+// Check for actual errors (not just warnings)
+if not regexBool(errors, "LOG_SUCCESS") and errors <> "" then
+  print("\n✗ Simulation failed:\n");
+  print(errors);
+  exit(1);
+end if;
+
+print("✓ Simulation completed successfully\n");
+
+// Extract results
+W_net := val(W_net, 0);
+eta := val(eta_thermal, 0);
+T4 := val(T4, 0);
+m_fuel := val(m_fuel, 0);
+Q_fuel := val(Q_fuel, 0);
+W_comp := val(W_comp, 0);
+W_turb := val(W_turb, 0);
+T2 := val(T2, 0);
+m_exhaust := val(m_exhaust, 0);
+cp_air := val(cp_air, 0);
+cp_gas := val(cp_gas, 0);
+
+print("\n================================================================================\n");
+print("RESULTS: INDUSTRIAL-STANDARD GAS TURBINE\n");
+print("================================================================================\n\n");
+
+print("THERMODYNAMIC PROPERTIES:\n");
+print("  Air specific heat:     " + String(cp_air) + " J/(kg·K)\n");
+print("  Gas specific heat:     " + String(cp_gas) + " J/(kg·K)\n");
+print("  (Note: Temperature-dependent, not constant!)\n\n");
+
+print("COMPRESSION (1→2):\n");
+print("  Inlet:  15°C, 1 bar\n");
+print("  Outlet: " + String(T2-273.15) + " °C, 18 bar\n");
+print("  Power:  " + String(W_comp/1e6) + " MW\n\n");
+
+print("COMBUSTION (2→3):\n");
+print("  Fuel flow:             " + String(m_fuel) + " kg/s\n");
+print("  Fuel input:            " + String(Q_fuel/1e6) + " MW\n");
+print("  Turbine inlet temp:    1400°C\n\n");
+
+print("EXPANSION (3→4):\n");
+print("  Turbine power:         " + String(W_turb/1e6) + " MW\n");
+print("  Exhaust temp:          " + String(T4-273.15) + " °C\n");
+print("  Exhaust flow:          " + String(m_exhaust) + " kg/s\n\n");
+
+print("OVERALL PERFORMANCE:\n");
+print("  Net Power Output:      " + String(W_net/1e6) + " MW\n");
+print("  Thermal Efficiency:    " + String(eta*100) + " %\n\n");
+
+print("================================================================================\n");
+print("VALIDATION: COMPARISON WITH YESTERDAY'S SIMPLE MODEL\n");
+print("================================================================================\n\n");
+
+// Yesterday's reference values
+simple_power := 274.6;
+simple_eff := 43.9;
+simple_T4 := 642.3;
+
+power_diff := abs(W_net/1e6 - simple_power);
+eff_diff := abs(eta*100 - simple_eff);
+T4_diff := abs((T4-273.15) - simple_T4);
+
+print("Parameter          | Yesterday    | Today        | Difference\n");
+print("-------------------|--------------|--------------|------------\n");
+print("Net Power          | 274.6 MW     | " + String(W_net/1e6) + " MW     | " + String(power_diff) + " MW\n");
+print("Efficiency         | 43.9 %       | " + String(eta*100) + " %      | " + String(eff_diff) + " %\n");
+print("Exhaust Temp       | 642.3 °C     | " + String(T4-273.15) + " °C    | " + String(T4_diff) + " °C\n\n");
+
+print("================================================================================\n");
+
+// Validation check
+if power_diff < 5.0 and eff_diff < 2.0 and T4_diff < 10.0 then
+  print("✓✓✓ VALIDATION EXCELLENT! ✓✓✓\n");
+  print("================================================================================\n\n");
+  print("Industrial model matches simple model within acceptable tolerances!\n\n");
+  print("KEY IMPROVEMENTS:\n");
+  print("  ✓ Temperature-dependent specific heats\n");
+  print("  ✓ Different gamma for air (1.4) vs hot gas (1.33)\n");
+  print("  ✓ Proper isentropic relations\n");
+  print("  ✓ Pressure drop in combustor\n");
+  print("  ✓ Mechanical losses\n\n");
+  
+  print("EXHAUST CONDITIONS (Input for HRSG):\n");
+  print("  Temperature:  " + String(T4-273.15) + " °C  ← Perfect for steam generation!\n");
+  print("  Mass flow:    " + String(m_exhaust) + " kg/s\n");
+  print("  Pressure:     ~1 bar\n");
+  print("  Energy available: ~" + String((Q_fuel - W_net)/1e6) + " MW\n\n");
+  
+  print("================================================================================\n");
+  print("READY FOR NEXT STEP!\n");
+  print("================================================================================\n\n");
+  print("✓ Gas turbine model validated\n");
+  print("✓ Industrial-standard practices implemented\n");
+  print("✓ Results match yesterday's simple model\n\n");
+  print("Next: Step 3 - Build HRSG with real water/steam properties\n");
+  print("(We'll use Modelica.Media.Water for accurate steam tables)\n\n");
+  
+else
+  print("⚠ RESULTS OUTSIDE EXPECTED RANGE\n");
+  print("================================================================================\n\n");
+  print("This might indicate:\n");
+  print("  - Different assumptions than simple model\n");
+  print("  - Numerical errors\n");
+  print("  - Model needs adjustment\n\n");
+  print("Please review the differences and investigate.\n\n");
+end if;

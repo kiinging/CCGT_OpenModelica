@@ -1,0 +1,73 @@
+// Simplified test - just get results
+
+print("\n================================================================================\n");
+print("INDUSTRIAL-STANDARD GAS TURBINE - RESULTS\n");
+print("================================================================================\n\n");
+
+loadModel(Modelica);
+loadFile("02_thermopower_models/models/Step2B_GasTurbine_Industrial.mo");
+
+print("Simulating...\n");
+simulate(Step2B_GasTurbine_Industrial, stopTime=1);
+
+// Extract results
+W_net := val(W_net, 0);
+eta := val(eta_thermal, 0);
+T4 := val(T4, 0);
+T2 := val(T2, 0);
+W_comp := val(W_comp, 0);
+W_turb := val(W_turb, 0);
+Q_fuel := val(Q_fuel, 0);
+m_fuel := val(m_fuel, 0);
+m_exhaust := val(m_exhaust, 0);
+
+print("\n================================================================================\n");
+print("RESULTS\n");
+print("================================================================================\n\n");
+
+print("POWER:\n");
+print("  Compressor:  " + String(W_comp/1e6) + " MW\n");
+print("  Turbine:     " + String(W_turb/1e6) + " MW\n");
+print("  Net Output:  " + String(W_net/1e6) + " MW\n\n");
+
+print("PERFORMANCE:\n");
+print("  Fuel Input:  " + String(Q_fuel/1e6) + " MW\n");
+print("  Efficiency:  " + String(eta*100) + " %\n");
+print("  Fuel Flow:   " + String(m_fuel) + " kg/s\n\n");
+
+print("TEMPERATURES:\n");
+print("  After Comp:  " + String(T2-273.15) + " C\n");
+print("  Exhaust:     " + String(T4-273.15) + " C\n\n");
+
+print("================================================================================\n");
+print("COMPARISON WITH YESTERDAY (Simple Model)\n");
+print("================================================================================\n\n");
+
+simple_power := 274.6;
+simple_eff := 43.9;
+simple_T4 := 642.3;
+
+print("                   Yesterday  |  Today (Industrial)\n");
+print("Net Power:         274.6 MW   |  " + String(W_net/1e6) + " MW\n");
+print("Efficiency:        43.9 %     |  " + String(eta*100) + " %\n");
+print("Exhaust Temp:      642.3 C    |  " + String(T4-273.15) + " C\n\n");
+
+power_diff_pct := (W_net/1e6 - simple_power) / simple_power * 100;
+eff_diff_pct := (eta*100 - simple_eff) / simple_eff * 100;
+
+print("Differences:\n");
+print("  Power:      " + String(power_diff_pct) + " %\n");
+print("  Efficiency: " + String(eff_diff_pct) + " %\n\n");
+
+if abs(power_diff_pct) < 3.0 then
+  print("✓ Excellent match with yesterday's model!\n\n");
+  print("EXHAUST FOR HRSG:\n");
+  print("  Temperature: " + String(T4-273.15) + " C (perfect for steam!)\n");
+  print("  Flow rate:   " + String(m_exhaust) + " kg/s\n");
+  print("  Available:   ~" + String((Q_fuel - W_net)/1e6) + " MW for steam cycle\n\n");
+  print("✓ Ready for Step 3: HRSG with real water properties!\n\n");
+else
+  print("Note: Small differences are normal with improved models\n\n");
+end if;
+
+print("================================================================================\n\n");

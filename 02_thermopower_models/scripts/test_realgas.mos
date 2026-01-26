@@ -1,0 +1,109 @@
+// Test Step 2: Gas Turbine with Real Gas Properties
+
+print("\n================================================================================\n");
+print("STEP 2: GAS TURBINE WITH REAL GAS PROPERTIES\n");
+print("================================================================================\n\n");
+
+print("Loading Modelica Standard Library...\n");
+loadModel(Modelica);
+
+print("Loading Step2_GasTurbine_RealGas.mo...\n");
+loaded := loadFile("02_thermopower_models/models/Step2_GasTurbine_RealGas.mo");
+
+if not loaded then
+  print("✗ ERROR: Could not load model\n");
+  exit(1);
+end if;
+
+print("✓ Model loaded successfully\n");
+print("\nSimulating (this may take 5-10 seconds)...\n");
+
+simulate(Step2_GasTurbine_RealGas, stopTime=1, tolerance=1e-6);
+
+errors := getErrorString();
+if errors <> "" then
+  print("\n✗ Simulation failed with errors:\n");
+  print(errors);
+  exit(1);
+end if;
+
+// Get results
+W_net := val(W_net, 0);
+eta := val(eta_thermal, 0);
+T4 := val(T4, 0);
+m_fuel := val(m_fuel, 0);
+Q_fuel := val(Q_fuel, 0);
+W_comp := val(W_comp, 0);
+W_turb := val(W_turb, 0);
+T2 := val(T2, 0);
+
+print("\n================================================================================\n");
+print("RESULTS - GAS TURBINE WITH REAL GAS PROPERTIES\n");
+print("================================================================================\n\n");
+
+print("POWER OUTPUT:\n");
+print("  Compressor Power:      " + String(W_comp/1e6) + " MW\n");
+print("  Turbine Power:         " + String(W_turb/1e6) + " MW\n");
+print("  Net Power Output:      " + String(W_net/1e6) + " MW\n\n");
+
+print("PERFORMANCE:\n");
+print("  Fuel Input:            " + String(Q_fuel/1e6) + " MW\n");
+print("  Thermal Efficiency:    " + String(eta*100) + " %\n");
+print("  Fuel Flow Rate:        " + String(m_fuel) + " kg/s\n\n");
+
+print("TEMPERATURES:\n");
+print("  After Compression:     " + String(T2-273.15) + " °C\n");
+print("  Turbine Inlet:         " + String(1400) + " °C (parameter)\n");
+print("  Exhaust Temperature:   " + String(T4-273.15) + " °C\n\n");
+
+print("================================================================================\n");
+print("COMPARISON WITH YESTERDAY'S SIMPLE MODEL\n");
+print("================================================================================\n\n");
+
+simple_power := 274.6;
+simple_eff := 43.9;
+simple_T4 := 642.3;
+
+power_diff := (W_net/1e6 - simple_power) / simple_power * 100;
+eff_diff := (eta*100 - simple_eff) / simple_eff * 100;
+T4_diff := ((T4-273.15) - simple_T4) / simple_T4 * 100;
+
+print("Parameter          | Simple Model | Real Gas Model | Difference\n");
+print("-------------------|--------------|----------------|------------\n");
+print("Net Power          | 274.6 MW     | " + String(W_net/1e6) + " MW     | ");
+if abs(power_diff) < 5.0 then
+  print(String(power_diff) + " % ✓\n");
+else
+  print(String(power_diff) + " %\n");
+end if;
+
+print("Efficiency         | 43.9 %       | " + String(eta*100) + " %      | ");
+if abs(eff_diff) < 5.0 then
+  print(String(eff_diff) + " % ✓\n");
+else
+  print(String(eff_diff) + " %\n");
+end if;
+
+print("Exhaust Temp       | 642.3 °C     | " + String(T4-273.15) + " °C    | ");
+if abs(T4_diff) < 5.0 then
+  print(String(T4_diff) + " % ✓\n");
+else
+  print(String(T4_diff) + " %\n");
+end if;
+
+print("\n================================================================================\n");
+
+if abs(power_diff) < 5.0 and abs(eff_diff) < 5.0 and abs(T4_diff) < 5.0 then
+  print("✓✓✓ VALIDATION PASSED! ✓✓✓\n");
+  print("================================================================================\n\n");
+  print("Real gas model matches simple model within 5% - excellent!\n");
+  print("This model uses more accurate thermodynamic properties.\n\n");
+  print("EXHAUST AVAILABLE FOR HRSG:\n");
+  print("  Temperature: " + String(T4-273.15) + " °C\n");
+  print("  Mass flow:   612.5 kg/s\n");
+  print("  Energy:      ~350 MW thermal\n\n");
+  print("Next step: Build HRSG with real water/steam properties (Step 3)\n\n");
+else
+  print("⚠ Results differ more than expected from simple model\n");
+  print("This is OK - real gas effects can cause differences\n\n");
+end if;

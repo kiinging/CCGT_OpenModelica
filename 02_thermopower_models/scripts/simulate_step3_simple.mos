@@ -1,0 +1,14 @@
+// Simple simulation of Step3
+print("\nLoading libraries...\n");
+loadModel(Modelica);
+loadFile("ThermoPower/package.mo");
+loadFile("02_thermopower_models/models/Step3_GasTurbine_ThermoPower.mo");
+
+print("\nSimulating (this takes 1-2 minutes)...\n");
+simulate(Step3_GasTurbine_ThermoPower, startTime=0, stopTime=2000);
+
+print("\n");
+print(getErrorString());
+print("\n");
+
+print("If simulation completed, try: val(powerSensor.W, 2000)\n");

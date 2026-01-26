@@ -1,0 +1,16 @@
+// Script to extract the Plant model code
+loadModel(Modelica);
+loadFile("ThermoPower/package.mo");
+
+print("\n=== Extracting ThermoPower.Examples.BraytonCycle.Plant ===\n\n");
+
+// Get the model code
+code := list(ThermoPower.Examples.BraytonCycle.Plant, interfaceOnly=false);
+
+print("Model code:\n");
+print(code);
+print("\n");
+
+// Save to file
+writeFile("02_thermopower_models/models/Plant_extracted.txt", code);
+print("Code saved to: 02_thermopower_models/models/Plant_extracted.txt\n");

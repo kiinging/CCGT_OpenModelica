@@ -1,0 +1,14 @@
+// Check what media packages ThermoPower actually has
+loadModel(Modelica);
+loadFile("ThermoPower/package.mo");
+
+print("\n=== Checking ThermoPower.Gas ===\n");
+getClassNames(ThermoPower.Gas, recursive=false);
+
+print("\n=== Checking if Air exists ===\n");
+exists := isClass(ThermoPower.Gas.Air);
+print("ThermoPower.Gas.Air exists: " + String(exists) + "\n");
+
+print("\n=== Looking at BraytonCycle example ===\n");
+print("What medium does the example use?\n");
+getClassNames(ThermoPower.Examples.BraytonCycle);

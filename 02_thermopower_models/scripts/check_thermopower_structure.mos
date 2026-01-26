@@ -1,0 +1,19 @@
+// Check actual ThermoPower structure
+loadModel(Modelica);
+loadFile("ThermoPower/package.mo");
+
+print("\n=== Checking ThermoPower packages ===\n");
+getClassNames(ThermoPower, recursive=false);
+
+print("\n=== Checking if Mechanics exists ===\n");
+exists := isPackage(ThermoPower.Mechanics);
+print("ThermoPower.Mechanics exists: " + String(exists) + "\n");
+
+print("\n=== Checking Electrical package ===\n");
+if isPackage(ThermoPower.Electrical) then
+  print("ThermoPower.Electrical exists!\n");
+  getClassNames(ThermoPower.Electrical, recursive=false);
+end if;
+
+print("\n=== Let's see what's in the actual Plant example ===\n");
+print("Listing Plant model to see actual components used:\n");

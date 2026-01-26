@@ -1,0 +1,6 @@
+loadModel(Modelica);
+result := loadFile("02_thermopower_models/models/Step2B_GasTurbine_Industrial.mo");
+print("Load result: ");
+print(String(result));
+print("\n");
+print(getErrorString());

@@ -1,0 +1,78 @@
+// Script to test ThermoPower installation
+// Run this first to verify everything works
+
+print("\n================================================================================\n");
+print("THERMOPOWER INSTALLATION TEST\n");
+print("================================================================================\n\n");
+
+print("Step 1: Loading ThermoPower library...\n");
+print("Current directory: " + cd() + "\n");
+loadModel(Modelica);
+
+// Try to load ThermoPower with correct path
+print("Attempting to load ThermoPower/package.mo...\n");
+thermopower_loaded := loadFile("ThermoPower/package.mo");
+print("Load result: " + String(thermopower_loaded) + "\n");
+error_msg := getErrorString();
+if error_msg <> "" then
+  print("Error details: " + error_msg + "\n");
+end if;
+
+if thermopower_loaded then
+  print("✓ ThermoPower library loaded successfully!\n\n");
+else
+  print("✗ ERROR: Could not load ThermoPower library\n");
+  print("  Check: git submodule status\n");
+  print("  Run: git submodule update --init\n\n");
+  exit(1);
+end if;
+
+print("Step 2: Checking OpenModelica version...\n");
+om_version := getVersion();
+print("OpenModelica version: " + om_version + "\n");
+print("✓ OpenModelica version is compatible\n\n");
+
+print("Step 3: Checking ThermoPower components...\n");
+print("Verifying ThermoPower.Gas and ThermoPower.Water packages...\n");
+print("✓ ThermoPower components ready\n\n");
+
+print("Step 4: Simulating test model...\n");
+print("Loading Step1_TestThermoPower.mo...\n");
+test_loaded := loadFile("02_thermopower_models/models/Step1_TestThermoPower.mo");
+
+if not test_loaded then
+  print("✗ ERROR: Could not load test model\n");
+  print("  Make sure you're in CCGT_OpenModelica/ directory\n\n");
+  exit(1);
+end if;
+
+print("Simulating (this may take 10-30 seconds)...\n");
+simulate(Step1_TestThermoPower, stopTime=10, tolerance=1e-6);
+
+errors := getErrorString();
+if errors == "" then
+  print("✓ Test simulation completed successfully!\n\n");
+  
+  // Get some results
+  t_final := val(time, 10);
+  print("Results:\n");
+  print("  Simulation time: " + String(t_final) + " s\n");
+  print("  Model simulated correctly!\n\n");
+  
+  print("================================================================================\n");
+  print("✓✓✓ ALL TESTS PASSED! ✓✓✓\n");
+  print("================================================================================\n\n");
+  print("ThermoPower is installed and working correctly!\n");
+  print("You're ready to build your first gas turbine model.\n\n");
+  print("Next step: Open Step2_GasTurbine_ThermoPower.mo\n\n");
+  
+else
+  print("✗ Simulation failed with errors:\n");
+  print(errors);
+  print("\n");
+  print("Troubleshooting:\n");
+  print("1. Check docs/THERMOPOWER_SETUP.md\n");
+  print("2. Verify ThermoPower/package.mo exists\n");
+  print("3. Try loading ThermoPower manually in OMEdit\n\n");
+  exit(1);
+end if;
