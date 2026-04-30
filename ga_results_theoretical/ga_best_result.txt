@@ -1,0 +1,17 @@
+GA Optimisation of M701F CCGT - Best Result
+==================================================
+
+Optimal thermal efficiency:  55.02%
+Total power output:          511.0 MW
+
+Optimal parameters:
+  Condenser pressure:   3000 Pa  (3.00 kPa)
+  Steam drum pressure:  4080444 Pa  (40.8 bar)
+  PR scale factor:      1.0047  (design PR = 21.1)
+
+Baseline:  P_cond=5.39 kPa  P_drum=80 bar  PR=21.0
+Fuel:      19.72 kg/s x 47.1 MJ/kg = 928.8 MW
+
+GA config: pop=20  gen=10  seed=42
+Evaluations: 165  Failed: 7
+Total time:  68.5 minutes
