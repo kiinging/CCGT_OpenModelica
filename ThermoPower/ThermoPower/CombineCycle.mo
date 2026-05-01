@@ -1434,10 +1434,10 @@ This is a simple model of a steam plant.
         Placement(transformation(origin = {-322, 10}, extent = {{60, -70}, {80, -50}})));
       Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_GT(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
         Placement(transformation(origin = {-220, -50}, extent = {{-10, -10}, {10, 10}})));
-      // Fuel flow actuator — y_start matches open-loop steady-state fuel for 331 MW GT
+      // Fuel flow actuator — y_start matches open-loop steady-state fuel for derated GT
       Modelica.Blocks.Continuous.FirstOrder fuelFlowActuator(k = 1, T = 4, y_start = 19.72, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
         Placement(transformation(origin = {-283.25, 57.5}, extent = {{-120.75, 80.5}, {-106.75, 94.5}})));
-      Modelica.Blocks.Continuous.FirstOrder powerSensor1_GT(k = 1, T = 1, y_start = 331e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+      Modelica.Blocks.Continuous.FirstOrder powerSensor1_GT(k = 1, T = 1, y_start = 281e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
         Placement(transformation(origin = {-396, 106}, extent = {{146, -118}, {162, -102}})));
       Modelica.Blocks.Interfaces.RealOutput generatedPower_GT annotation(
         Placement(transformation(origin = {-404, -6}, extent = {{196, -10}, {216, 10}}), iconTransformation(extent = {{196, -10}, {216, 10}})));
@@ -1501,19 +1501,19 @@ This is a simple model of a steam plant.
       // ============================================================
       // Closed-loop control: GT power tracking via fuel flow
       //   PV = measured GT power (W), CS = fuel mass flow (kg/s)
-      //   Steady-state: GT = 331 MW → fuel = 19.72 kg/s (open-loop calibrated)
-      //   Fuel sensitivity: ~6.5 MW_GT per kg/s, ~13 MW_ST per kg/s
-      //   PVstart = 331e6/500e6 = 0.662
+      //   Steady-state: GT = 281 MW → fuel ~19.72 kg/s (derated, Tdes_in=288.15)
+      //   At 32°C, compressor operates at 97.2% corrected speed (off-design)
+      //   PVstart = 281e6/500e6 = 0.562
       //   CSstart = (19.72-10)/(21-10) = 0.884
       // ============================================================
-      // Power setpoint: 331 MW steady, ramp +5 MW at t=800s over 50s
-      Modelica.Blocks.Sources.Ramp powerSetPoint(offset = 331e6, height = 5e6, duration = 50, startTime = 800) annotation(
+      // Power setpoint: 281 MW steady, ramp +5 MW at t=800s over 50s
+      Modelica.Blocks.Sources.Ramp powerSetPoint(offset = 281e6, height = 5e6, duration = 50, startTime = 800) annotation(
         Placement(transformation(origin = {-76, 44}, extent = {{-440, 96}, {-420, 116}})));
       // GT power PID — conservative tuning for robust first-run
       //   Kp=3: moderate proportional gain
       //   Ti=60: slow integral to avoid oscillation
       //   holdWhenSimplified=true: aids homotopy initialization
-      Models.PID powerController(PVmin = 0, PVmax = 500e6, CSmin = 10, CSmax = 21, PVstart = 0.662, CSstart = 0.884, steadyStateInit = true, holdWhenSimplified = true, Kp = 3, Ti = 60) annotation(
+      Models.PID powerController(PVmin = 0, PVmax = 500e6, CSmin = 10, CSmax = 21, PVstart = 0.562, CSstart = 0.884, steadyStateInit = true, holdWhenSimplified = true, Kp = 3, Ti = 60) annotation(
         Placement(transformation(origin = {-152, 40}, extent = {{-300, 96}, {-280, 116}})));
       // ---- Void fraction controller (identical to open-loop) ----
       Modelica.Blocks.Sources.Step voidFractionSetPoint(offset = 0.2, height = 0, startTime = 0) annotation(
