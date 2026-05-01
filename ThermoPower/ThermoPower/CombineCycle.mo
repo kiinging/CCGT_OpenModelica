@@ -1032,5 +1032,17 @@ This is a simple model of a steam plant.
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}, initialScale = 0.1), graphics = {Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Text(extent = {{-88, 84}, {100, -96}}, lineColor = {0, 0, 255}, textString = "CC")}),
         Documentation(info = "<html><p>Combined cycle power plant simulation model.</p></html>"));
     end CloseLoopCombineCycle;
+    model FoulingStudyCC "Combined cycle simulation for fouling study"
+      extends OpenLoopCombineCycle(
+        superheater(gamma_G = 90 * foulingFactor),
+        evaporator(gamma = 85 * foulingFactor),
+        economizer(gamma_G = 30 * foulingFactor)
+      );
+      parameter Real foulingFactor = 1.0 "Fouling factor (1.0 = healthy, <1.0 = fouled)";
+      annotation(
+        experiment(StopTime = 1000, Tolerance = 1e-06),
+        Documentation(info = "<html><p>Model for studying HRSG fouling impact on plant performance.</p></html>"));
+    end FoulingStudyCC;
+
   end Simulators;
 end CombineCycle;
