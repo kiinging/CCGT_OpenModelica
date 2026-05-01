@@ -504,144 +504,72 @@ This is a simple model of a steam plant.
 </html>"));
     end RankineCycle;
 
-
-      model Evaporator
-        "Fire tube boiler, fixed heat transfer coefficient, no radiative heat transfer"
-
-        replaceable package FlueGasMedium = ThermoPower.Media.FlueGas
-          constrainedby Modelica.Media.Interfaces.PartialMedium
-          "Flue gas model";
-        replaceable package FluidMedium = ThermoPower.Water.StandardWater
-          constrainedby Modelica.Media.Interfaces.PartialPureSubstance
-          "Fluid model";
-
-        parameter Integer N=2 "Number of node of the gas side";
-
-//Nominal parameter
-        parameter SI.MassFlowRate gasNomFlowRate
-          "Nominal flow rate through the gas side";
-        parameter SI.MassFlowRate fluidNomFlowRate
-          "Nominal flow rate through the fluid side";
-        parameter SI.Pressure gasNomPressure
-          "Nominal pressure in the gas side inlet";
-        parameter SI.Pressure fluidNomPressure
-          "Nominal pressure in the fluid side inlet";
-
-//Physical Parameter
-        parameter SI.Area exchSurface
-          "Exchange surface between gas - metal tube";
-        parameter SI.Volume gasVol "Gas volume";
-        parameter SI.Volume fluidVol "Fluid volume";
-        parameter SI.Volume metalVol "Volume of the metal part in the tubes";
-        parameter SI.Density rhom "Metal density";
-        parameter SI.SpecificHeatCapacity cm
-          "Specific heat capacity of the metal";
-
-//Start value
-        parameter SI.Temperature Tstart "Average gas temperature start value"
-          annotation (Dialog(tab="Initialization"));
-        parameter SI.CoefficientOfHeatTransfer gamma
-          "Constant heat transfer coefficient in the gas side";
-        parameter Choices.Flow1D.FFtypes FFtype_G=ThermoPower.Choices.Flow1D.FFtypes.NoFriction
-          "Friction Factor Type, gas side";
-        parameter Real Kfnom_G=0
-          "Nominal hydraulic resistance coefficient, gas side";
-        parameter SI.PressureDifference dpnom_G=0
-          "Nominal pressure drop, gas side (friction term only!)";
-        parameter SI.Density rhonom_G=0 "Nominal inlet density, gas side";
-        parameter Real Cfnom_G=0 "Nominal Fanning friction factor, gsa side";
-        parameter Boolean gasQuasiStatic=false
-          "Quasi-static model of the flue gas (mass, energy and momentum static balances";
-        constant Real pi=Modelica.Constants.pi;
-        Water.DrumEquilibrium water(
-          cm=cm,
-          redeclare package Medium = FluidMedium,
-          Vd=fluidVol,
-          Mm=metalVol*rhom,
-          pstart=fluidNomPressure,
-          Vlstart=fluidVol*0.8)
-          annotation (Placement(transformation(extent={{-24,18},{24,66}},
-                rotation=0)));
-        Thermal.HT_DHTVolumes      adapter(N=N - 1)
-          annotation (Placement(transformation(
-              origin={0,-8},
-              extent={{-10,-10},{10,10}},
-              rotation=270)));
-        Water.FlangeA waterIn(redeclare package Medium = FluidMedium) annotation (
-           Placement(transformation(extent={{-20,80},{20,120}}, rotation=0)));
-        Water.FlangeB waterOut(redeclare package Medium = FluidMedium)
-          annotation (Placement(transformation(extent={{-20,-120},{20,-80}},
-                rotation=0)));
-        Gas.FlangeA gasIn(redeclare package Medium = FlueGasMedium) annotation (
-            Placement(transformation(extent={{-120,-20},{-80,20}}, rotation=0)));
-        Gas.FlangeB gasOut(redeclare package Medium = FlueGasMedium) annotation (
-            Placement(transformation(extent={{80,-20},{120,20}}, rotation=0)));
-        Gas.Flow1DFV
-                   gasFlow(
-          Dhyd=1,
-          wnom=gasNomFlowRate,
-          FFtype=ThermoPower.Choices.Flow1D.FFtypes.NoFriction,
-          redeclare package Medium = FlueGasMedium,
-          QuasiStatic=gasQuasiStatic,
-          N=N,
-          L=L,
-          A=gasVol/L,
-          omega=exchSurface/L,
-          Tstartbar=Tstart,
-          redeclare model HeatTransfer =
-              Thermal.HeatTransferFV.ConstantHeatTransferCoefficient (gamma=gamma))
-                            annotation (Placement(transformation(
-              origin={0,-40},
-              extent={{14,14},{-14,-14}},
-              rotation=180)));
-
-        Modelica.Blocks.Interfaces.RealOutput voidFraction annotation (Placement(
-              transformation(extent={{96,50},{116,70}}, rotation=0)));
-        final parameter SI.Distance L=1 "Tube length";
-        Modelica.Blocks.Sources.RealExpression realExpression
-          annotation (Placement(transformation(extent={{18,108},{38,128}})));
-        Modelica.Blocks.Sources.RealExpression output1(y=water.Vv/water.Vd)
-          annotation (Placement(transformation(extent={{54,52},{86,70}})));
-      equation
-        connect(water.feed, waterIn) annotation (Line(
-            points={{-21.6,31.44},{-52,31.44},{-52,100},{0,100}},
-            thickness=0.5,
-            color={0,0,255}));
-        connect(water.steam, waterOut) annotation (Line(
-            points={{16.32,59.28},{40,59.28},{40,-70},{0,-70},{0,-100}},
-            thickness=0.5,
-            color={0,0,255}));
-        connect(gasFlow.infl, gasIn) annotation (Line(
-            points={{-14,-40},{-60,-40},{-60,0},{-100,0}},
-            color={159,159,223},
-            thickness=0.5));
-        connect(gasFlow.outfl, gasOut) annotation (Line(
-            points={{14,-40},{60,-40},{60,0},{100,0}},
-            color={159,159,223},
-            thickness=0.5));
-        connect(output1.y, voidFraction) annotation (Line(points={{87.6,61},{96,61},{96,
-                60},{106,60}}, color={0,0,127}));
-        connect(adapter.DHT_port, gasFlow.wall) annotation (Line(points={{-1.9984e-15,
-                -19},{-1.9984e-15,-32},{-8.88178e-16,-32},{-8.88178e-16,-33}}, color={
-                255,127,0}));
-        connect(adapter.HT_port, water.wall) annotation (Line(points={{2.19269e-15,4},
-                {0,4},{0,20.4}}, color={191,0,0}));
-        annotation (                   Icon(graphics={
-              Rectangle(
-                extent={{-100,100},{100,-100}},
-                lineColor={0,0,255},
-                fillColor={230,230,230},
-                fillPattern=FillPattern.Solid),
-              Line(
-                points={{0,-80},{0,-40},{40,-20},{-40,20},{0,40},{0,80}},
-                color={0,0,255},
-                thickness=0.5),
-              Text(
-                extent={{-100,-115},{100,-145}},
-                lineColor={85,170,255},
-                textString="%name")}));
-      end Evaporator;
-
+    model Evaporator "Fire tube boiler, fixed heat transfer coefficient, no radiative heat transfer"
+      replaceable package FlueGasMedium = ThermoPower.Media.FlueGas constrainedby Modelica.Media.Interfaces.PartialMedium "Flue gas model";
+      replaceable package FluidMedium = ThermoPower.Water.StandardWater constrainedby Modelica.Media.Interfaces.PartialPureSubstance "Fluid model";
+      parameter Integer N = 2 "Number of node of the gas side";
+      //Nominal parameter
+      parameter SI.MassFlowRate gasNomFlowRate "Nominal flow rate through the gas side";
+      parameter SI.MassFlowRate fluidNomFlowRate "Nominal flow rate through the fluid side";
+      parameter SI.Pressure gasNomPressure "Nominal pressure in the gas side inlet";
+      parameter SI.Pressure fluidNomPressure "Nominal pressure in the fluid side inlet";
+      //Physical Parameter
+      parameter SI.Area exchSurface "Exchange surface between gas - metal tube";
+      parameter SI.Volume gasVol "Gas volume";
+      parameter SI.Volume fluidVol "Fluid volume";
+      parameter SI.Volume metalVol "Volume of the metal part in the tubes";
+      parameter SI.Density rhom "Metal density";
+      parameter SI.SpecificHeatCapacity cm "Specific heat capacity of the metal";
+      //Start value
+      parameter SI.Temperature Tstart "Average gas temperature start value" annotation(
+        Dialog(tab = "Initialization"));
+      parameter SI.CoefficientOfHeatTransfer gamma "Constant heat transfer coefficient in the gas side";
+      parameter Choices.Flow1D.FFtypes FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.NoFriction "Friction Factor Type, gas side";
+      parameter Real Kfnom_G = 0 "Nominal hydraulic resistance coefficient, gas side";
+      parameter SI.PressureDifference dpnom_G = 0 "Nominal pressure drop, gas side (friction term only!)";
+      parameter SI.Density rhonom_G = 0 "Nominal inlet density, gas side";
+      parameter Real Cfnom_G = 0 "Nominal Fanning friction factor, gsa side";
+      parameter Boolean gasQuasiStatic = false "Quasi-static model of the flue gas (mass, energy and momentum static balances";
+      constant Real pi = Modelica.Constants.pi;
+      Water.DrumEquilibrium water(cm = cm, redeclare package Medium = FluidMedium, Vd = fluidVol, Mm = metalVol*rhom, pstart = fluidNomPressure, Vlstart = fluidVol*0.8) annotation(
+        Placement(transformation(extent = {{-24, 18}, {24, 66}}, rotation = 0)));
+      Thermal.HT_DHTVolumes adapter(N = N - 1) annotation(
+        Placement(transformation(origin = {0, -8}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
+      Water.FlangeA waterIn(redeclare package Medium = FluidMedium) annotation(
+        Placement(transformation(extent = {{-20, 80}, {20, 120}}, rotation = 0)));
+      Water.FlangeB waterOut(redeclare package Medium = FluidMedium) annotation(
+        Placement(transformation(extent = {{-20, -120}, {20, -80}}, rotation = 0)));
+      Gas.FlangeA gasIn(redeclare package Medium = FlueGasMedium) annotation(
+        Placement(transformation(extent = {{-120, -20}, {-80, 20}}, rotation = 0)));
+      Gas.FlangeB gasOut(redeclare package Medium = FlueGasMedium) annotation(
+        Placement(transformation(extent = {{80, -20}, {120, 20}}, rotation = 0)));
+      Gas.Flow1DFV gasFlow(Dhyd = 1, wnom = gasNomFlowRate, FFtype = ThermoPower.Choices.Flow1D.FFtypes.NoFriction, redeclare package Medium = FlueGasMedium, QuasiStatic = gasQuasiStatic, N = N, L = L, A = gasVol/L, omega = exchSurface/L, Tstartbar = Tstart, redeclare model HeatTransfer = Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = gamma)) annotation(
+        Placement(transformation(origin = {0, -40}, extent = {{14, 14}, {-14, -14}}, rotation = 180)));
+      Modelica.Blocks.Interfaces.RealOutput voidFraction annotation(
+        Placement(transformation(extent = {{96, 50}, {116, 70}}, rotation = 0)));
+      final parameter SI.Distance L = 1 "Tube length";
+      Modelica.Blocks.Sources.RealExpression realExpression annotation(
+        Placement(transformation(extent = {{18, 108}, {38, 128}})));
+      Modelica.Blocks.Sources.RealExpression output1(y = water.Vv/water.Vd) annotation(
+        Placement(transformation(extent = {{54, 52}, {86, 70}})));
+    equation
+      connect(water.feed, waterIn) annotation(
+        Line(points = {{-21.6, 31.44}, {-52, 31.44}, {-52, 100}, {0, 100}}, thickness = 0.5, color = {0, 0, 255}));
+      connect(water.steam, waterOut) annotation(
+        Line(points = {{16.32, 59.28}, {40, 59.28}, {40, -70}, {0, -70}, {0, -100}}, thickness = 0.5, color = {0, 0, 255}));
+      connect(gasFlow.infl, gasIn) annotation(
+        Line(points = {{-14, -40}, {-60, -40}, {-60, 0}, {-100, 0}}, color = {159, 159, 223}, thickness = 0.5));
+      connect(gasFlow.outfl, gasOut) annotation(
+        Line(points = {{14, -40}, {60, -40}, {60, 0}, {100, 0}}, color = {159, 159, 223}, thickness = 0.5));
+      connect(output1.y, voidFraction) annotation(
+        Line(points = {{87.6, 61}, {96, 61}, {96, 60}, {106, 60}}, color = {0, 0, 127}));
+      connect(adapter.DHT_port, gasFlow.wall) annotation(
+        Line(points = {{-1.9984e-15, -19}, {-1.9984e-15, -32}, {-8.88178e-16, -32}, {-8.88178e-16, -33}}, color = {255, 127, 0}));
+      connect(adapter.HT_port, water.wall) annotation(
+        Line(points = {{2.19269e-15, 4}, {0, 4}, {0, 20.4}}, color = {191, 0, 0}));
+      annotation(
+        Icon(graphics = {Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {230, 230, 230}, fillPattern = FillPattern.Solid), Line(points = {{0, -80}, {0, -40}, {40, -20}, {-40, 20}, {0, 40}, {0, 80}}, color = {0, 0, 255}, thickness = 0.5), Text(extent = {{-100, -115}, {100, -145}}, lineColor = {85, 170, 255}, textString = "%name")}));
+    end Evaporator;
   end Models;
 
   package Simulators
@@ -683,7 +611,6 @@ This is a simple model of a steam plant.
         Placement(transformation(origin = {-396, 106}, extent = {{146, -118}, {162, -102}})));
       Modelica.Blocks.Interfaces.RealOutput generatedPower_GT annotation(
         Placement(transformation(origin = {-404, -6}, extent = {{196, -10}, {216, 10}}), iconTransformation(extent = {{196, -10}, {216, 10}})));
-      
       ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateInletCC(redeclare package Medium = Media.Air) annotation(
         Placement(transformation(origin = {-306, 14}, extent = {{-100, 30}, {-80, 50}})));
       ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateOutletCC(redeclare package Medium = Media.FlueGas) annotation(
@@ -771,7 +698,8 @@ This is a simple model of a steam plant.
         Line(points = {{-326, 54}, {-332, 54}, {-332, 52}, {-338, 52}}, color = {159, 159, 223}));
       connect(stateOutletCC.outlet, PressDrop1.inlet) annotation(
         Line(points = {{-314, 54}, {-306, 54}, {-306, 32}}, color = {159, 159, 223}));
-      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(Line(points = {{-210, -50}, {-240, -50}}));
+      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(
+        Line(points = {{-210, -50}, {-240, -50}}));
 // Bridge: GT exhaust to ST HRSG
       connect(turbine.outlet, stateTurbineExhaust.inlet) annotation(
         Line(points = {{-278, -26}, {-278, 61}, {-200, 61}, {-200, 60}}, color = {159, 159, 223}));
@@ -831,11 +759,870 @@ This is a simple model of a steam plant.
       connect(constantSpeed_ST.flange, powerSensor_ST.flange_b) annotation(
         Line(points = {{160, 52}, {132, 52}}));
       annotation(
-        experiment(StopTime = 1000, Tolerance = 1e-06),
+        experiment(StopTime = 2500, Tolerance = 1e-06),
         Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-520, 180}, {320, -240}}, initialScale = 0.1)),
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}, initialScale = 0.1), graphics = {Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Text(extent = {{-88, 84}, {100, -96}}, lineColor = {0, 0, 255}, textString = "CC")}),
         Documentation(info = "<html><p>Combined cycle power plant simulation model.</p></html>"));
     end OpenLoopCombineCycle;
+
+    model OpenLoopCombineCycle_500MW "500 MW Combined cycle simulation — Malaysian equatorial ambient (32 degC)"
+      extends Modelica.Icons.Example;
+      import ThermoPower;
+      // ============================================================
+      // Brayton Cycle (GT) Parameters — scaled ×3 for ~330 MW GT
+      // ============================================================
+      // Efficiency maps (dimensionless) — unchanged, valid across machine sizes
+      parameter Real tableEtaC[6, 4] = [0, 95, 100, 105; 1, 82.5e-2, 81e-2, 80.5e-2; 2, 84e-2, 82.9e-2, 82e-2; 3, 83.2e-2, 82.2e-2, 81.5e-2; 4, 82.5e-2, 81.2e-2, 79e-2; 5, 79.5e-2, 78e-2, 76.5e-2];
+      parameter Real tableEtaT[5, 4] = [1, 90, 100, 110; 2.36, 89e-2, 89.5e-2, 89.3e-2; 2.88, 90e-2, 90.6e-2, 90.5e-2; 3.56, 90.5e-2, 90.6e-2, 90.5e-2; 4.46, 90.2e-2, 90.3e-2, 90e-2];
+      // Pressure ratio map — unchanged
+      parameter Real tablePR[6, 4] = [0, 95, 100, 105; 1, 22.6, 27, 32; 2, 22, 26.6, 30.8; 3, 20.8, 25.5, 29; 4, 19, 24.3, 27.1; 5, 17, 21.5, 24.2];
+      // Flow-capacity maps — scaled ×3.0 for larger machine
+      parameter Real tablePhicC[6, 4] = [0, 95, 100, 105; 1, 114.9e-3, 129.0e-3, 140.4e-3; 2, 117.9e-3, 131.4e-3, 143.7e-3; 3, 121.8e-3, 135.6e-3, 145.2e-3; 4, 124.8e-3, 138.3e-3, 146.7e-3; 5, 126.9e-3, 139.8e-3, 147.9e-3];
+      parameter Real tablePhicT[5, 4] = [1, 90, 100, 110; 2.36, 14.04e-3, 14.04e-3, 14.04e-3; 2.88, 14.04e-3, 14.04e-3, 14.04e-3; 3.56, 14.04e-3, 14.04e-3, 14.04e-3; 4.46, 14.04e-3, 14.04e-3, 14.04e-3];
+      replaceable package FlueGas = ThermoPower.Media.FlueGas constrainedby Modelica.Media.Interfaces.PartialMedium "Flue gas model";
+      replaceable package Water = ThermoPower.Water.StandardWater constrainedby Modelica.Media.Interfaces.PartialPureSubstance "Fluid model";
+      // ---- GT Components ----
+      // Malaysian equatorial ambient: 32 degC (305.15 K), sea-level 1.01325 bar
+      Gas.SourcePressure SourceP1(redeclare package Medium = Media.Air, p0 = 1.01325e5, T = 305.15) annotation(
+        Placement(transformation(origin = {-298, 20}, extent = {{-188, -30}, {-168, -10}})));
+      Gas.Compressor compressor(redeclare package Medium = Media.Air, tablePhic = tablePhicC, tableEta = tableEtaC, pstart_in = 1.01325e5, pstart_out = 2.45e6, Tstart_in = 305.15, tablePR = tablePR, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 610, explicitIsentropicEnthalpy = true, Tdes_in = 305.15, Ndesign = 157.08) annotation(
+        Placement(transformation(origin = {-286, 10}, extent = {{-158, -90}, {-98, -30}})));
+      Gas.Turbine turbine(redeclare package Medium = FlueGas, pstart_in = 2.38e6, pstart_out = 1.05e5, tablePhic = tablePhicT, tableEta = tableEtaT, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 800, Tdes_in = 1400, Tstart_in = 1370, Ndesign = 157.08) annotation(
+        Placement(transformation(origin = {-326, 16}, extent = {{-6, -90}, {54, -30}})));
+      Gas.CombustionChamber CombustionChamber1(gamma = 1, Cm = 1, pstart = 2.41e6, Tstart = 1370, V = 0.15, S = 0.15, initOpt = ThermoPower.Choices.Init.Options.steadyState, HH = 41.6e6) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-72, 20}, {-32, 60}})));
+      Gas.SourceMassFlow SourceW1(redeclare package Medium = Media.NaturalGas, w0 = 18.2, p0 = 2500000, T = 300, use_in_w0 = true) annotation(
+        Placement(transformation(origin = {-276, 18}, extent = {{-100, 70}, {-80, 90}})));
+      Gas.PressDrop PressDrop1(redeclare package Medium = FlueGas, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, wnom = 920, rhonom = 6, dpnom = 26000, pstart = 2410000, Tstart = 1370) annotation(
+        Placement(transformation(origin = {-326, 18}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
+      Gas.PressDrop PressDrop2(pstart = 2.45e6, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, A = 1, redeclare package Medium = Media.Air, dpnom = 0.19e5, wnom = 900, rhonom = 14, Tstart = 610) annotation(
+        Placement(transformation(origin = {-390, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_GT annotation(
+        Placement(transformation(origin = {-322, 10}, extent = {{60, -70}, {80, -50}})));
+      Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_GT(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
+        Placement(transformation(origin = {-220, -50}, extent = {{-10, -10}, {10, 10}})));
+      Modelica.Blocks.Continuous.FirstOrder fuelFlowActuator(k = 1, T = 4, y_start = 500, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-294, 6}, extent = {{-138, 92}, {-122, 108}})));
+      Modelica.Blocks.Continuous.FirstOrder powerSensor1_GT(k = 1, T = 1, y_start = 330e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-396, 106}, extent = {{146, -118}, {162, -102}})));
+      Modelica.Blocks.Interfaces.RealOutput generatedPower_GT annotation(
+        Placement(transformation(origin = {-404, -6}, extent = {{196, -10}, {216, 10}}), iconTransformation(extent = {{196, -10}, {216, 10}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateInletCC(redeclare package Medium = Media.Air) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-100, 30}, {-80, 50}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateOutletCC(redeclare package Medium = Media.FlueGas) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-24, 30}, {-4, 50}})));
+      // ============================================================
+      // Steam Cycle (Rankine) — scaled for ~170 MW ST, 80 bar live steam
+      // ============================================================
+      Models.PrescribedPresureCondenser condenser(p = 5390, Vtot = 30, redeclare package Medium = Water, initOpt = ThermoPower.Choices.Init.Options.fixedState) annotation(
+        Placement(transformation(origin = {-32, 0}, extent = {{100, -100}, {140, -60}})));
+      Models.PrescribedSpeedPump prescribedSpeedPump(n0 = 1500, nominalMassFlowRate = 165, q_nom = {0, 0.165, 0.3}, redeclare package FluidMedium = Water, head_nom = {1200, 800, 0}, rho0 = 1000, nominalOutletPressure = 8000000, nominalInletPressure = 50000) annotation(
+        Placement(transformation(extent = {{40, -180}, {0, -140}})));
+      Modelica.Blocks.Continuous.FirstOrder nPumpActuator(k = 1, initType = Modelica.Blocks.Types.Init.SteadyState, T = 2, y_start = 1500) annotation(
+        Placement(transformation(origin = {20, -60}, extent = {{-280, -110}, {-260, -90}})));
+      Modelica.Blocks.Interfaces.RealOutput generatedPower_ST annotation(
+        Placement(transformation(origin = {-48, 10}, extent = {{290, 90}, {310, 110}}), iconTransformation(extent = {{290, 90}, {310, 110}})));
+      Modelica.Blocks.Continuous.FirstOrder powerSensor_ST_ctrl(k = 1, T = 1, y_start = 170e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-86, 10}, extent = {{240, 90}, {260, 110}})));
+      Modelica.Blocks.Interfaces.RealOutput voidFraction_ST annotation(
+        Placement(transformation(origin = {-155, -185}, extent = {{435, 165}, {465, 135}}), iconTransformation(extent = {{290, -110}, {310, -90}})));
+      Modelica.Blocks.Continuous.FirstOrder voidFractionSensor_ST(k = 1, T = 1, initType = Modelica.Blocks.Types.Init.SteadyState, y_start = 0.2) annotation(
+        Placement(transformation(origin = {-86, 68}, extent = {{240, -110}, {260, -90}})));
+      // Steam turbine — 165 kg/s, 80 bar inlet
+      ThermoPower.Water.SteamTurbineStodola steamTurbine(wstart = 165, wnom = 165, Kt = 0.0117, redeclare package Medium = Water, PRstart = 50, pnom = 8000000) annotation(
+        Placement(transformation(origin = {-48, -4}, extent = {{50, 30}, {100, 80}})));
+      Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_ST annotation(
+        Placement(transformation(origin = {-34, -2}, extent = {{138, 68}, {166, 40}})));
+      // Economizer — surfaces & volumes ×3, 80 bar steam, 1500 kg/s gas
+      Models.HE economizer(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, N_F = 6, exchSurface_G = 120290, exchSurface_F = 10318, extSurfaceTub = 11665, gasVol = 30, fluidVol = 87, metalVol = 24.2, rhomcm = 7900*578.05, lambda = 20, gasNomFlowRate = 1500, fluidNomFlowRate = 165, gamma_G = 30, gamma_F = 3000, rhonom_G = 1, Kfnom_F = 150, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, FFtype_F = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, N_G = 6, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart_G = 493.15, Tstart_M = 443.15, dpnom_G = 1000, dpnom_F = 40000) annotation(
+        Placement(transformation(extent = {{-120, -80}, {-80, -120}})));
+      // Evaporator — surfaces & volumes ×3, 80 bar (Tsat ≈ 568 K)
+      Models.Evaporator evaporator(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, gasVol = 30, fluidVol = 37.2, metalVol = 14.4, gasNomFlowRate = 1500, fluidNomFlowRate = 165, N = 4, rhom = 7900, cm = 578.05, gamma = 85, exchSurface = 73206, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart = 568.15, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, dpnom_G = 1000, rhonom_G = 1) annotation(
+        Placement(transformation(extent = {{-120, 0}, {-80, -40}})));
+      // Superheater — surfaces & volumes ×3, 80 bar steam
+      Models.HE superheater(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, N_F = 7, exchSurface_G = 6945, exchSurface_F = 1351, extSurfaceTub = 1514, gasVol = 30, fluidVol = 13.4, metalVol = 3.44, rhomcm = 7900*578.05, lambda = 20, gasNomFlowRate = 1500, gamma_G = 90, gamma_F = 6000, fluidNomFlowRate = 165, rhonom_G = 1, Kfnom_F = 150, FluidPhaseStart = ThermoPower.Choices.FluidPhase.FluidPhases.Steam, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, FFtype_F = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, N_G = 7, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart_G = 773.15, Tstart_M = 623.15, dpnom_G = 1000, dpnom_F = 40000) annotation(
+        Placement(transformation(extent = {{-120, 80}, {-80, 40}})));
+      // ---- State readers ----
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasInletEvaporator(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-150, -30}, {-130, -10}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasInletEconomizer(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-150, -110}, {-130, -90}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasOutlet(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-70, -110}, {-50, -90}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterSuperheater_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterSuperheater_out(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, 100}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterEvaporator_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, -60}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterEconomizer_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, -140}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.Gas.SinkPressure sinkP_gas(T = 400, redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-40, -110}, {-20, -90}})));
+      Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_ST(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
+        Placement(transformation(origin = {-20, -2}, extent = {{200, 44}, {180, 64}})));
+      // ---- System & signals ----
+      inner System system(allowFlowReversal = false, initOpt = ThermoPower.Choices.Init.Options.steadyState, T_amb = 305.15, T_wb = 301.15) annotation(
+        Placement(transformation(extent = {{240, 160}, {260, 180}})));
+      // Fuel step: offset = 19.2 kg/s steady-state, +2.7 kg/s step at t=500 s
+      Modelica.Blocks.Sources.Step fuelFlowRateStep(height = 2.7, startTime = 500, offset = 19.2) annotation(
+        Placement(transformation(origin = {-72, 0}, extent = {{-440, 96}, {-420, 116}})));
+      Modelica.Blocks.Sources.Step voidFractionSetPoint(offset = 0.2, height = 0, startTime = 0) annotation(
+        Placement(transformation(origin = {-12, -46}, extent = {{-360, -120}, {-340, -100}})));
+      Models.PID voidFractionController(PVmin = 0.1, PVmax = 0.9, CSmax = 2500, PVstart = 0.1, CSstart = 0.5, steadyStateInit = true, CSmin = 500, Kp = -2, Ti = 300) annotation(
+        Placement(transformation(origin = {-12, -50}, extent = {{-300, -120}, {-280, -100}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateTurbineExhaust(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(origin = {-194, 60}, extent = {{-10, -10}, {10, 10}})));
+    equation
+// ==== GT Connections ====
+      connect(SourceW1.flange, CombustionChamber1.inf) annotation(
+        Line(points = {{-356, 98}, {-356, 85}, {-358, 85}, {-358, 74}}, color = {159, 159, 223}));
+      connect(SourceP1.flange, compressor.inlet) annotation(
+        Line(points = {{-466, 0}, {-438, 0}, {-438, -26}}, color = {159, 159, 223}));
+      connect(PressDrop1.outlet, turbine.inlet) annotation(
+        Line(points = {{-326, 8}, {-326, -20}}, color = {159, 159, 223}));
+      connect(compressor.outlet, PressDrop2.inlet) annotation(
+        Line(points = {{-390, -26}, {-390, 10}}, color = {159, 159, 223}));
+      connect(compressor.shaft_b, turbine.shaft_a) annotation(
+        Line(points = {{-396, -50}, {-358, -50}, {-358, -44}, {-320, -44}}));
+      connect(powerSensor_GT.flange_a, turbine.shaft_b) annotation(
+        Line(points = {{-262, -50}, {-273, -50}, {-273, -44}, {-284, -44}}));
+      connect(fuelFlowActuator.u, fuelFlowRateStep.y) annotation(
+        Line(points = {{-433.6, 106}, {-491, 106}}, color = {0, 0, 127}));
+      connect(fuelFlowActuator.y, SourceW1.in_w0) annotation(
+        Line(points = {{-415.2, 106}, {-374.2, 106}, {-374.2, 103}, {-372.2, 103}}, color = {0, 0, 127}));
+      connect(powerSensor_GT.power, powerSensor1_GT.u) annotation(
+        Line(points = {{-260, -61}, {-260, -32.5}, {-252, -32.5}, {-252, -4}}, color = {0, 0, 127}));
+      connect(powerSensor1_GT.y, generatedPower_GT) annotation(
+        Line(points = {{-233.2, -4}, {-215.7, -4}, {-215.7, -6}, {-198.2, -6}}, color = {0, 0, 127}));
+      connect(CombustionChamber1.ina, stateInletCC.outlet) annotation(
+        Line(points = {{-378, 54}, {-384, 54}, {-384, 56}, {-390, 56}}, color = {159, 159, 223}));
+      connect(stateInletCC.inlet, PressDrop2.outlet) annotation(
+        Line(points = {{-402, 54}, {-410, 54}, {-410, 34}}, color = {159, 159, 223}));
+      connect(stateOutletCC.inlet, CombustionChamber1.out) annotation(
+        Line(points = {{-326, 54}, {-332, 54}, {-332, 52}, {-338, 52}}, color = {159, 159, 223}));
+      connect(stateOutletCC.outlet, PressDrop1.inlet) annotation(
+        Line(points = {{-314, 54}, {-306, 54}, {-306, 32}}, color = {159, 159, 223}));
+      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(
+        Line(points = {{-210, -50}, {-240, -50}}));
+// ==== Bridge: GT exhaust → HRSG ====
+      connect(turbine.outlet, stateTurbineExhaust.inlet) annotation(
+        Line(points = {{-278, -20}, {-278, 61}, {-200, 61}, {-200, 60}}, color = {159, 159, 223}));
+      connect(stateTurbineExhaust.outlet, superheater.gasIn) annotation(
+        Line(origin = {-1, 0}, points = {{-188, 60}, {-120, 60}}, color = {159, 159, 223}));
+// ==== ST Connections ====
+      connect(prescribedSpeedPump.inlet, condenser.waterOut) annotation(
+        Line(points = {{40, -160}, {88, -160}, {88, -100}}));
+      connect(generatedPower_ST, powerSensor_ST_ctrl.y) annotation(
+        Line(points = {{252, 110}, {175, 110}}, color = {0, 0, 127}));
+      connect(nPumpActuator.u, voidFractionController.CS) annotation(
+        Line(points = {{-262, -160}, {-292, -160}}, color = {0, 0, 127}));
+      connect(voidFractionController.SP, voidFractionSetPoint.y) annotation(
+        Line(points = {{-312, -156}, {-351, -156}}, color = {0, 0, 127}));
+      connect(voidFractionController.PV, voidFraction_ST) annotation(
+        Line(points = {{-312, -164}, {-326, -164}, {-326, -234}, {295, -234}, {295, -35}}, color = {0, 0, 127}));
+      connect(voidFraction_ST, voidFractionSensor_ST.y) annotation(
+        Line(points = {{295, -35}, {280.5, -35}, {280.5, -32}, {175, -32}}, color = {0, 0, 127}));
+      connect(powerSensor_ST.flange_a, steamTurbine.shaft_b) annotation(
+        Line(points = {{104, 52}, {91, 52}, {91, 51}, {43, 51}}));
+      connect(condenser.steamIn, steamTurbine.outlet) annotation(
+        Line(points = {{88, -60}, {88, 71}, {47, 71}}));
+      connect(prescribedSpeedPump.outlet, stateWaterEconomizer_in.inlet) annotation(
+        Line(points = {{0, -160}, {-100, -160}, {-100, -146}}));
+      connect(stateWaterEconomizer_in.outlet, economizer.waterIn) annotation(
+        Line(points = {{-100, -134}, {-100, -120}}));
+      connect(economizer.waterOut, stateWaterEvaporator_in.inlet) annotation(
+        Line(points = {{-100, -80}, {-100, -66}}));
+      connect(stateWaterEvaporator_in.outlet, evaporator.waterIn) annotation(
+        Line(points = {{-100, -54}, {-100, -40}}));
+      connect(economizer.gasIn, stateGasInletEconomizer.outlet) annotation(
+        Line(points = {{-120, -100}, {-128, -100}, {-134, -100}}));
+      connect(stateGasInletEconomizer.inlet, evaporator.gasOut) annotation(
+        Line(points = {{-146, -100}, {-160, -100}, {-160, -50}, {-40, -50}, {-40, -20}, {-80, -20}}));
+      connect(sinkP_gas.flange, stateGasOutlet.outlet) annotation(
+        Line(points = {{-40, -100}, {-54, -100}}));
+      connect(stateGasOutlet.inlet, economizer.gasOut) annotation(
+        Line(points = {{-66, -100}, {-74, -100}, {-80, -100}}));
+      connect(evaporator.gasIn, stateGasInletEvaporator.outlet) annotation(
+        Line(points = {{-120, -20}, {-134, -20}}));
+      connect(stateGasInletEvaporator.inlet, superheater.gasOut) annotation(
+        Line(points = {{-146, -20}, {-160, -20}, {-160, 30}, {-40, 30}, {-40, 60}, {-80, 60}}));
+      connect(evaporator.waterOut, stateWaterSuperheater_in.inlet) annotation(
+        Line(points = {{-100, 0}, {-100, 14}}));
+      connect(stateWaterSuperheater_in.outlet, superheater.waterIn) annotation(
+        Line(points = {{-100, 26}, {-100, 40}}));
+      connect(superheater.waterOut, stateWaterSuperheater_out.inlet) annotation(
+        Line(points = {{-100, 80}, {-100, 94}}));
+      connect(stateWaterSuperheater_out.outlet, steamTurbine.inlet) annotation(
+        Line(points = {{-100, 106}, {-100, 120}, {7, 120}, {7, 71}}));
+      connect(powerSensor_ST_ctrl.u, powerSensor_ST.power) annotation(
+        Line(points = {{152, 110}, {152, 108.5}, {108, 108.5}, {108, 109}, {107.5, 109}, {107.5, 67}, {107, 67}}, color = {0, 0, 127}));
+      connect(voidFractionSensor_ST.u, evaporator.voidFraction) annotation(
+        Line(points = {{152, -32}, {-78.8, -32}}, color = {0, 0, 127}));
+      connect(nPumpActuator.y, prescribedSpeedPump.nPump) annotation(
+        Line(points = {{-239, -160}, {-239, -160}, {-239, -158}, {-138, -158}, {-138, -194}, {160, -194}, {160, -148}, {34.4, -148}}, color = {0, 0, 127}));
+      connect(constantSpeed_ST.flange, powerSensor_ST.flange_b) annotation(
+        Line(points = {{160, 52}, {132, 52}}));
+      annotation(
+        experiment(StopTime = 2500, Tolerance = 1e-06),
+        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-520, 180}, {320, -240}}, initialScale = 0.1), graphics),
+        Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}, initialScale = 0.1), graphics = {Rectangle(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Text(origin = {-8, 10}, textColor = {0, 0, 255}, extent = {{-88, 84}, {100, -96}}, textString = "CC")}),
+        Documentation(info = "<html><head></head><body><p>500 MW combined cycle power plant — open-loop simulation with Malaysian equatorial ambient conditions (32 degC, 1.01325 bar). GT ~224 MW, ST ~229 MW. Single-pressure HRSG at 80 bar.</p></body></html>"));
+    end OpenLoopCombineCycle_500MW;
+
+    model OpenLoopCombineCycle_M701F_ISO "M701F-based 500 MW Combined cycle — 2:1 GT:ST split, ISO conditions"
+      extends Modelica.Icons.Example;
+      import ThermoPower;
+      // ============================================================
+      // Brayton Cycle (GT) — Mitsubishi M701F specification
+      //   ISO rating: 385 MW simple-cycle, PR=21:1, 748 kg/s air
+      //   TIT ~1580 K, exhaust 903 K (630 degC)
+      //   Target net CC output: ~333 MW GT / ~167 MW ST
+      // ============================================================
+      // Efficiency maps — upgraded to M701F F-class levels
+      // Compressor: x1.07 from baseline (polytropic eta ~91%, isentropic ~88-90%)
+      // Turbine: x1.04 from baseline (isentropic eta ~93-94%)
+      parameter Real tableEtaC[6, 4] = [0, 95, 100, 105; 1, 88.3e-2, 86.7e-2, 86.1e-2; 2, 89.9e-2, 88.7e-2, 87.7e-2; 3, 89.0e-2, 87.95e-2, 87.2e-2; 4, 88.3e-2, 86.9e-2, 84.5e-2; 5, 85.1e-2, 83.5e-2, 81.9e-2];
+      parameter Real tableEtaT[5, 4] = [1, 90, 100, 110; 2.36, 92.6e-2, 93.1e-2, 92.9e-2; 2.88, 93.6e-2, 94.2e-2, 94.1e-2; 3.56, 94.1e-2, 94.2e-2, 94.1e-2; 4.46, 93.8e-2, 93.9e-2, 93.6e-2];
+      // Pressure ratio map — scaled x0.78 for M701F PR=21 (baseline design-point PR=27)
+      parameter Real tablePR[6, 4] = [0, 95, 100, 105; 1, 17.6, 21.1, 25.0; 2, 17.2, 20.7, 24.0; 3, 16.2, 19.9, 22.6; 4, 14.8, 19.0, 21.1; 5, 13.3, 16.8, 18.9];
+      // Flow-capacity maps — compressor x2.86, turbine x3.15
+      // Turbine needs higher scaling than compressor because at PR=21 (vs baseline 27),
+      // p_turb_inlet is 13% lower and sqrt(TIT) is 7% higher, requiring more phi_t
+      // to pass the same mass flow: phi_t = m*sqrt(T)/p
+      parameter Real tablePhicC[6, 4] = [0, 95, 100, 105; 1, 109.5e-3, 123.0e-3, 133.8e-3; 2, 112.4e-3, 125.3e-3, 137.0e-3; 3, 116.1e-3, 129.3e-3, 138.4e-3; 4, 119.0e-3, 131.8e-3, 139.9e-3; 5, 121.0e-3, 133.3e-3, 141.0e-3];
+      parameter Real tablePhicT[5, 4] = [1, 90, 100, 110; 2.36, 14.74e-3, 14.74e-3, 14.74e-3; 2.88, 14.74e-3, 14.74e-3, 14.74e-3; 3.56, 14.74e-3, 14.74e-3, 14.74e-3; 4.46, 14.74e-3, 14.74e-3, 14.74e-3];
+      replaceable package FlueGas = ThermoPower.Media.FlueGas constrainedby Modelica.Media.Interfaces.PartialMedium "Flue gas model";
+      replaceable package Water = ThermoPower.Water.StandardWater constrainedby Modelica.Media.Interfaces.PartialPureSubstance "Fluid model";
+      // ---- GT Components ----
+      // ISO ambient: 15 degC (288.15 K), sea-level 1.01325 bar
+      Gas.SourcePressure SourceP1(redeclare package Medium = Media.Air, p0 = 1.01325e5, T = 288.15) annotation(
+        Placement(transformation(origin = {-298, 20}, extent = {{-188, -30}, {-168, -10}})));
+      Gas.Compressor compressor(redeclare package Medium = Media.Air, tablePhic = tablePhicC, tableEta = tableEtaC, pstart_in = 1.01325e5, pstart_out = 2.13e6, Tstart_in = 288.15, tablePR = tablePR, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 660, explicitIsentropicEnthalpy = true, Tdes_in = 288.15, Ndesign = 157.08) annotation(
+        Placement(transformation(origin = {-286, 10}, extent = {{-158, -90}, {-98, -30}})));
+      Gas.Turbine turbine(redeclare package Medium = FlueGas, pstart_in = 2.06e6, pstart_out = 1.05e5, tablePhic = tablePhicT, tableEta = tableEtaT, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 903, Tdes_in = 1580, Tstart_in = 1580, Ndesign = 157.08) annotation(
+        Placement(transformation(origin = {-326, 16}, extent = {{-6, -90}, {54, -30}})));
+      Gas.CombustionChamber CombustionChamber1(gamma = 1, Cm = 1, pstart = 2.09e6, Tstart = 1580, V = 0.125, S = 0.125, initOpt = ThermoPower.Choices.Init.Options.steadyState, HH = 47.1e6) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-72, 20}, {-32, 60}})));
+      Gas.SourceMassFlow SourceW1(redeclare package Medium = Media.NaturalGas, w0 = 17.22, p0 = 2200000, T = 300, use_in_w0 = true) annotation(
+        Placement(transformation(origin = {-276, 18}, extent = {{-100, 70}, {-80, 90}})));
+      Gas.PressDrop PressDrop1(redeclare package Medium = FlueGas, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, wnom = 768, rhonom = 3.5, dpnom = 26000, pstart = 2090000, Tstart = 1580) annotation(
+        Placement(transformation(origin = {-326, 18}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
+      Gas.PressDrop PressDrop2(pstart = 2.13e6, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, A = 1, redeclare package Medium = Media.Air, dpnom = 0.19e5, wnom = 748, rhonom = 12, Tstart = 660) annotation(
+        Placement(transformation(origin = {-390, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_GT annotation(
+        Placement(transformation(origin = {-322, 10}, extent = {{60, -70}, {80, -50}})));
+      Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_GT(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
+        Placement(transformation(origin = {-220, -50}, extent = {{-10, -10}, {10, 10}})));
+      Modelica.Blocks.Continuous.FirstOrder fuelFlowActuator(k = 1, T = 4, y_start = 500, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-294, 6}, extent = {{-138, 92}, {-122, 108}})));
+      Modelica.Blocks.Continuous.FirstOrder powerSensor1_GT(k = 1, T = 1, y_start = 333e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-396, 106}, extent = {{146, -118}, {162, -102}})));
+      Modelica.Blocks.Interfaces.RealOutput generatedPower_GT annotation(
+        Placement(transformation(origin = {-404, -6}, extent = {{196, -10}, {216, 10}}), iconTransformation(extent = {{196, -10}, {216, 10}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateInletCC(redeclare package Medium = Media.Air) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-100, 30}, {-80, 50}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateOutletCC(redeclare package Medium = Media.FlueGas) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-24, 30}, {-4, 50}})));
+      // ============================================================
+      // Steam Cycle (Rankine) — sized for ~167 MW ST, 80 bar live steam
+      //   Steam flow ~105 kg/s, condenser at 5390 Pa
+      // ============================================================
+      Models.PrescribedPresureCondenser condenser(p = 5390, Vtot = 20, redeclare package Medium = Water, initOpt = ThermoPower.Choices.Init.Options.fixedState) annotation(
+        Placement(transformation(origin = {-32, 0}, extent = {{100, -100}, {140, -60}})));
+      Models.PrescribedSpeedPump prescribedSpeedPump(n0 = 1500, nominalMassFlowRate = 105, q_nom = {0, 0.105, 0.19}, redeclare package FluidMedium = Water, head_nom = {1100, 750, 0}, rho0 = 1000, nominalOutletPressure = 8000000, nominalInletPressure = 50000) annotation(
+        Placement(transformation(extent = {{40, -180}, {0, -140}})));
+      Modelica.Blocks.Continuous.FirstOrder nPumpActuator(k = 1, initType = Modelica.Blocks.Types.Init.SteadyState, T = 2, y_start = 1500) annotation(
+        Placement(transformation(origin = {20, -60}, extent = {{-280, -110}, {-260, -90}})));
+      Modelica.Blocks.Interfaces.RealOutput generatedPower_ST annotation(
+        Placement(transformation(origin = {-48, 10}, extent = {{290, 90}, {310, 110}}), iconTransformation(extent = {{290, 90}, {310, 110}})));
+      Modelica.Blocks.Continuous.FirstOrder powerSensor_ST_ctrl(k = 1, T = 1, y_start = 167e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-86, 10}, extent = {{240, 90}, {260, 110}})));
+      Modelica.Blocks.Interfaces.RealOutput voidFraction_ST annotation(
+        Placement(transformation(origin = {-155, -185}, extent = {{435, 165}, {465, 135}}), iconTransformation(extent = {{290, -110}, {310, -90}})));
+      Modelica.Blocks.Continuous.FirstOrder voidFractionSensor_ST(k = 1, T = 1, initType = Modelica.Blocks.Types.Init.SteadyState, y_start = 0.2) annotation(
+        Placement(transformation(origin = {-86, 68}, extent = {{240, -110}, {260, -90}})));
+      // Steam turbine — 105 kg/s, 80 bar inlet
+      ThermoPower.Water.SteamTurbineStodola steamTurbine(wstart = 105, wnom = 105, Kt = 0.0198, redeclare package Medium = Water, PRstart = 148, pnom = 8000000) annotation(
+        Placement(transformation(origin = {-48, -4}, extent = {{50, 30}, {100, 80}})));
+      Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_ST annotation(
+        Placement(transformation(origin = {-34, -2}, extent = {{138, 68}, {166, 40}})));
+      // Economizer — surfaces x1.28 (x1.7 x0.75), 80 bar steam, 768 kg/s gas
+      Models.HE economizer(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, N_F = 6, exchSurface_G = 51120, exchSurface_F = 4385, extSurfaceTub = 4958, gasVol = 17, fluidVol = 49.3, metalVol = 13.7, rhomcm = 7900*578.05, lambda = 20, gasNomFlowRate = 768, fluidNomFlowRate = 105, gamma_G = 30, gamma_F = 3000, rhonom_G = 1, Kfnom_F = 150, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, FFtype_F = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, N_G = 6, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart_G = 493.15, Tstart_M = 443.15, dpnom_G = 1000, dpnom_F = 34000) annotation(
+        Placement(transformation(extent = {{-120, -80}, {-80, -120}})));
+      // Evaporator — surfaces x1.28 (x1.7 x0.75), 80 bar (Tsat = 568 K)
+      Models.Evaporator evaporator(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, gasVol = 17, fluidVol = 21.1, metalVol = 8.16, gasNomFlowRate = 768, fluidNomFlowRate = 105, N = 4, rhom = 7900, cm = 578.05, gamma = 85, exchSurface = 31110, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart = 568.15, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, dpnom_G = 1000, rhonom_G = 1) annotation(
+        Placement(transformation(extent = {{-120, 0}, {-80, -40}})));
+      // Superheater — surfaces x1.28 (x1.7 x0.75), 80 bar steam
+      Models.HE superheater(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, N_F = 7, exchSurface_G = 2951, exchSurface_F = 574, extSurfaceTub = 644, gasVol = 17, fluidVol = 7.6, metalVol = 1.95, rhomcm = 7900*578.05, lambda = 20, gasNomFlowRate = 768, gamma_G = 90, gamma_F = 6000, fluidNomFlowRate = 105, rhonom_G = 1, Kfnom_F = 150, FluidPhaseStart = ThermoPower.Choices.FluidPhase.FluidPhases.Steam, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, FFtype_F = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, N_G = 7, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart_G = 803.15, Tstart_M = 623.15, dpnom_G = 1000, dpnom_F = 34000) annotation(
+        Placement(transformation(extent = {{-120, 80}, {-80, 40}})));
+      // ---- State readers ----
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasInletEvaporator(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-150, -30}, {-130, -10}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasInletEconomizer(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-150, -110}, {-130, -90}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasOutlet(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-70, -110}, {-50, -90}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterSuperheater_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterSuperheater_out(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, 100}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterEvaporator_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, -60}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterEconomizer_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, -140}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.Gas.SinkPressure sinkP_gas(T = 400, redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-40, -110}, {-20, -90}})));
+      Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_ST(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
+        Placement(transformation(origin = {-20, -2}, extent = {{200, 44}, {180, 64}})));
+      // ---- System & signals ----
+      inner System system(allowFlowReversal = false, initOpt = ThermoPower.Choices.Init.Options.steadyState, T_amb = 288.15, T_wb = 284.15) annotation(
+        Placement(transformation(extent = {{240, 160}, {260, 180}})));
+      // Fuel step: offset = 17.22 kg/s steady-state (scaled by 41.6/47.1 for LHV=47.1), +2.5 kg/s step at t=500 s
+      Modelica.Blocks.Sources.Step fuelFlowRateStep(height = 2.5, startTime = 500, offset = 17.22) annotation(
+        Placement(transformation(origin = {-72, 0}, extent = {{-440, 96}, {-420, 116}})));
+      Modelica.Blocks.Sources.Step voidFractionSetPoint(offset = 0.2, height = 0, startTime = 0) annotation(
+        Placement(transformation(origin = {-12, -46}, extent = {{-360, -120}, {-340, -100}})));
+      Models.PID voidFractionController(PVmin = 0.1, PVmax = 0.9, CSmax = 2500, PVstart = 0.1, CSstart = 0.5, steadyStateInit = true, CSmin = 500, Kp = -2, Ti = 300) annotation(
+        Placement(transformation(origin = {-12, -50}, extent = {{-300, -120}, {-280, -100}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateTurbineExhaust(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(origin = {-194, 60}, extent = {{-10, -10}, {10, 10}})));
+    equation
+// ==== GT Connections ====
+      connect(SourceW1.flange, CombustionChamber1.inf) annotation(
+        Line(points = {{-356, 98}, {-356, 85}, {-358, 85}, {-358, 74}}, color = {159, 159, 223}));
+      connect(SourceP1.flange, compressor.inlet) annotation(
+        Line(points = {{-466, 0}, {-438, 0}, {-438, -26}}, color = {159, 159, 223}));
+      connect(PressDrop1.outlet, turbine.inlet) annotation(
+        Line(points = {{-326, 8}, {-326, -20}}, color = {159, 159, 223}));
+      connect(compressor.outlet, PressDrop2.inlet) annotation(
+        Line(points = {{-390, -26}, {-390, 10}}, color = {159, 159, 223}));
+      connect(compressor.shaft_b, turbine.shaft_a) annotation(
+        Line(points = {{-396, -50}, {-358, -50}, {-358, -44}, {-320, -44}}));
+      connect(powerSensor_GT.flange_a, turbine.shaft_b) annotation(
+        Line(points = {{-262, -50}, {-273, -50}, {-273, -44}, {-284, -44}}));
+      connect(fuelFlowActuator.u, fuelFlowRateStep.y) annotation(
+        Line(points = {{-433.6, 106}, {-491, 106}}, color = {0, 0, 127}));
+      connect(fuelFlowActuator.y, SourceW1.in_w0) annotation(
+        Line(points = {{-415.2, 106}, {-374.2, 106}, {-374.2, 103}, {-372.2, 103}}, color = {0, 0, 127}));
+      connect(powerSensor_GT.power, powerSensor1_GT.u) annotation(
+        Line(points = {{-260, -61}, {-260, -32.5}, {-252, -32.5}, {-252, -4}}, color = {0, 0, 127}));
+      connect(powerSensor1_GT.y, generatedPower_GT) annotation(
+        Line(points = {{-233.2, -4}, {-215.7, -4}, {-215.7, -6}, {-198.2, -6}}, color = {0, 0, 127}));
+      connect(CombustionChamber1.ina, stateInletCC.outlet) annotation(
+        Line(points = {{-378, 54}, {-384, 54}, {-384, 56}, {-390, 56}}, color = {159, 159, 223}));
+      connect(stateInletCC.inlet, PressDrop2.outlet) annotation(
+        Line(points = {{-402, 54}, {-410, 54}, {-410, 34}}, color = {159, 159, 223}));
+      connect(stateOutletCC.inlet, CombustionChamber1.out) annotation(
+        Line(points = {{-326, 54}, {-332, 54}, {-332, 52}, {-338, 52}}, color = {159, 159, 223}));
+      connect(stateOutletCC.outlet, PressDrop1.inlet) annotation(
+        Line(points = {{-314, 54}, {-306, 54}, {-306, 32}}, color = {159, 159, 223}));
+      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(
+        Line(points = {{-210, -50}, {-240, -50}}));
+// ==== Bridge: GT exhaust -> HRSG ====
+      connect(turbine.outlet, stateTurbineExhaust.inlet) annotation(
+        Line(points = {{-278, -20}, {-278, 61}, {-200, 61}, {-200, 60}}, color = {159, 159, 223}));
+      connect(stateTurbineExhaust.outlet, superheater.gasIn) annotation(
+        Line(origin = {-1, 0}, points = {{-188, 60}, {-120, 60}}, color = {159, 159, 223}));
+// ==== ST Connections ====
+      connect(prescribedSpeedPump.inlet, condenser.waterOut) annotation(
+        Line(points = {{40, -160}, {88, -160}, {88, -100}}));
+      connect(generatedPower_ST, powerSensor_ST_ctrl.y) annotation(
+        Line(points = {{252, 110}, {175, 110}}, color = {0, 0, 127}));
+      connect(nPumpActuator.u, voidFractionController.CS) annotation(
+        Line(points = {{-262, -160}, {-292, -160}}, color = {0, 0, 127}));
+      connect(voidFractionController.SP, voidFractionSetPoint.y) annotation(
+        Line(points = {{-312, -156}, {-351, -156}}, color = {0, 0, 127}));
+      connect(voidFractionController.PV, voidFraction_ST) annotation(
+        Line(points = {{-312, -164}, {-326, -164}, {-326, -234}, {295, -234}, {295, -35}}, color = {0, 0, 127}));
+      connect(voidFraction_ST, voidFractionSensor_ST.y) annotation(
+        Line(points = {{295, -35}, {280.5, -35}, {280.5, -32}, {175, -32}}, color = {0, 0, 127}));
+      connect(powerSensor_ST.flange_a, steamTurbine.shaft_b) annotation(
+        Line(points = {{104, 52}, {91, 52}, {91, 51}, {43, 51}}));
+      connect(condenser.steamIn, steamTurbine.outlet) annotation(
+        Line(points = {{88, -60}, {88, 71}, {47, 71}}));
+      connect(prescribedSpeedPump.outlet, stateWaterEconomizer_in.inlet) annotation(
+        Line(points = {{0, -160}, {-100, -160}, {-100, -146}}));
+      connect(stateWaterEconomizer_in.outlet, economizer.waterIn) annotation(
+        Line(points = {{-100, -134}, {-100, -120}}));
+      connect(economizer.waterOut, stateWaterEvaporator_in.inlet) annotation(
+        Line(points = {{-100, -80}, {-100, -66}}));
+      connect(stateWaterEvaporator_in.outlet, evaporator.waterIn) annotation(
+        Line(points = {{-100, -54}, {-100, -40}}));
+      connect(economizer.gasIn, stateGasInletEconomizer.outlet) annotation(
+        Line(points = {{-120, -100}, {-128, -100}, {-134, -100}}));
+      connect(stateGasInletEconomizer.inlet, evaporator.gasOut) annotation(
+        Line(points = {{-146, -100}, {-160, -100}, {-160, -50}, {-40, -50}, {-40, -20}, {-80, -20}}));
+      connect(sinkP_gas.flange, stateGasOutlet.outlet) annotation(
+        Line(points = {{-40, -100}, {-54, -100}}));
+      connect(stateGasOutlet.inlet, economizer.gasOut) annotation(
+        Line(points = {{-66, -100}, {-74, -100}, {-80, -100}}));
+      connect(evaporator.gasIn, stateGasInletEvaporator.outlet) annotation(
+        Line(points = {{-120, -20}, {-134, -20}}));
+      connect(stateGasInletEvaporator.inlet, superheater.gasOut) annotation(
+        Line(points = {{-146, -20}, {-160, -20}, {-160, 30}, {-40, 30}, {-40, 60}, {-80, 60}}));
+      connect(evaporator.waterOut, stateWaterSuperheater_in.inlet) annotation(
+        Line(points = {{-100, 0}, {-100, 14}}));
+      connect(stateWaterSuperheater_in.outlet, superheater.waterIn) annotation(
+        Line(points = {{-100, 26}, {-100, 40}}));
+      connect(superheater.waterOut, stateWaterSuperheater_out.inlet) annotation(
+        Line(points = {{-100, 80}, {-100, 94}}));
+      connect(stateWaterSuperheater_out.outlet, steamTurbine.inlet) annotation(
+        Line(points = {{-100, 106}, {-100, 120}, {7, 120}, {7, 71}}));
+      connect(powerSensor_ST_ctrl.u, powerSensor_ST.power) annotation(
+        Line(points = {{152, 110}, {152, 108.5}, {108, 108.5}, {108, 109}, {107.5, 109}, {107.5, 67}, {107, 67}}, color = {0, 0, 127}));
+      connect(voidFractionSensor_ST.u, evaporator.voidFraction) annotation(
+        Line(points = {{152, -32}, {-78.8, -32}}, color = {0, 0, 127}));
+      connect(nPumpActuator.y, prescribedSpeedPump.nPump) annotation(
+        Line(points = {{-239, -160}, {-239, -160}, {-239, -158}, {-138, -158}, {-138, -194}, {160, -194}, {160, -148}, {34.4, -148}}, color = {0, 0, 127}));
+      connect(constantSpeed_ST.flange, powerSensor_ST.flange_b) annotation(
+        Line(points = {{160, 52}, {132, 52}}));
+      annotation(
+        experiment(StopTime = 2500, Tolerance = 1e-06),
+        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-520, 180}, {320, -240}}, initialScale = 0.1), graphics),
+        Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}, initialScale = 0.1), graphics = {Rectangle(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Text(origin = {-8, 10}, textColor = {0, 0, 255}, extent = {{-88, 84}, {100, -96}}, textString = "M701F")}),
+        Documentation(info = "<html><p>M701F-based 500 MW combined cycle power plant — open-loop simulation with ISO conditions (15 degC, 1.01325 bar). Based on Mitsubishi M701F gas turbine (PR=21, TIT=1580K, 748 kg/s air, exhaust 903K). 2:1 GT:ST power split: GT ~333 MW, ST ~167 MW. Single-pressure HRSG at 80 bar.</p></html>"));
+    end OpenLoopCombineCycle_M701F_ISO;
+
+    model OpenLoopCombineCycle_M701F "M701F-based 500 MW Combined cycle — 2:1 GT:ST split, Malaysian equatorial ambient (32 degC)"
+      extends Modelica.Icons.Example;
+      import ThermoPower;
+      // ============================================================
+      // Brayton Cycle (GT) — Mitsubishi M701F specification
+      //   ISO rating: 385 MW simple-cycle, PR=21:1, 748 kg/s air
+      //   TIT ~1580 K, exhaust 903 K (630 degC)
+      //   Target net CC output: ~333 MW GT / ~167 MW ST
+      // ============================================================
+      // Efficiency maps — upgraded to M701F F-class levels
+      // Compressor: x1.07 from baseline (polytropic eta ~91%, isentropic ~88-90%)
+      // Turbine: x1.04 from baseline (isentropic eta ~93-94%)
+      parameter Real tableEtaC[6, 4] = [0, 95, 100, 105; 1, 88.3e-2, 86.7e-2, 86.1e-2; 2, 89.9e-2, 88.7e-2, 87.7e-2; 3, 89.0e-2, 87.95e-2, 87.2e-2; 4, 88.3e-2, 86.9e-2, 84.5e-2; 5, 85.1e-2, 83.5e-2, 81.9e-2];
+      parameter Real tableEtaT[5, 4] = [1, 90, 100, 110; 2.36, 92.6e-2, 93.1e-2, 92.9e-2; 2.88, 93.6e-2, 94.2e-2, 94.1e-2; 3.56, 94.1e-2, 94.2e-2, 94.1e-2; 4.46, 93.8e-2, 93.9e-2, 93.6e-2];
+      // Pressure ratio map — scaled x0.78 for M701F PR=21 (baseline design-point PR=27)
+      parameter Real tablePR[6, 4] = [0, 95, 100, 105; 1, 17.6, 21.1, 25.0; 2, 17.2, 20.7, 24.0; 3, 16.2, 19.9, 22.6; 4, 14.8, 19.0, 21.1; 5, 13.3, 16.8, 18.9];
+      // Flow-capacity maps — compressor x2.86, turbine x3.15
+      // Turbine needs higher scaling than compressor because at PR=21 (vs baseline 27),
+      // p_turb_inlet is 13% lower and sqrt(TIT) is 7% higher, requiring more phi_t
+      // to pass the same mass flow: phi_t = m*sqrt(T)/p
+      parameter Real tablePhicC[6, 4] = [0, 95, 100, 105; 1, 109.5e-3, 123.0e-3, 133.8e-3; 2, 112.4e-3, 125.3e-3, 137.0e-3; 3, 116.1e-3, 129.3e-3, 138.4e-3; 4, 119.0e-3, 131.8e-3, 139.9e-3; 5, 121.0e-3, 133.3e-3, 141.0e-3];
+      parameter Real tablePhicT[5, 4] = [1, 90, 100, 110; 2.36, 14.74e-3, 14.74e-3, 14.74e-3; 2.88, 14.74e-3, 14.74e-3, 14.74e-3; 3.56, 14.74e-3, 14.74e-3, 14.74e-3; 4.46, 14.74e-3, 14.74e-3, 14.74e-3];
+      replaceable package FlueGas = ThermoPower.Media.FlueGas constrainedby Modelica.Media.Interfaces.PartialMedium "Flue gas model";
+      replaceable package Water = ThermoPower.Water.StandardWater constrainedby Modelica.Media.Interfaces.PartialPureSubstance "Fluid model";
+      // ---- GT Components ----
+      // Malaysian equatorial ambient: 32 degC (305.15 K), sea-level 1.01325 bar
+      Gas.SourcePressure SourceP1(redeclare package Medium = Media.Air, p0 = 1.01325e5, T = 305.15) annotation(
+        Placement(transformation(origin = {-298, 20}, extent = {{-188, -30}, {-168, -10}})));
+      Gas.Compressor compressor(redeclare package Medium = Media.Air, tablePhic = tablePhicC, tableEta = tableEtaC, pstart_in = 1.01325e5, pstart_out = 2.13e6, Tstart_in = 305.15, tablePR = tablePR, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 660, explicitIsentropicEnthalpy = true, Tdes_in = 288.15, Ndesign = 157.08) annotation(
+        Placement(transformation(origin = {-286, 10}, extent = {{-158, -90}, {-98, -30}})));
+      Gas.Turbine turbine(redeclare package Medium = FlueGas, pstart_in = 2.06e6, pstart_out = 1.05e5, tablePhic = tablePhicT, tableEta = tableEtaT, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 903, Tdes_in = 1580, Tstart_in = 1580, Ndesign = 157.08) annotation(
+        Placement(transformation(origin = {-326, 16}, extent = {{-6, -90}, {54, -30}})));
+      Gas.CombustionChamber CombustionChamber1(gamma = 1, Cm = 1, pstart = 2.09e6, Tstart = 1580, V = 0.125, S = 0.125, initOpt = ThermoPower.Choices.Init.Options.steadyState, HH = 47.1e6) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-72, 20}, {-32, 60}})));
+      Gas.SourceMassFlow SourceW1(redeclare package Medium = Media.NaturalGas, w0 = 17.22, p0 = 2200000, T = 300, use_in_w0 = true) annotation(
+        Placement(transformation(origin = {-276, 18}, extent = {{-100, 70}, {-80, 90}})));
+      Gas.PressDrop PressDrop1(redeclare package Medium = FlueGas, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, wnom = 768, rhonom = 3.5, dpnom = 26000, pstart = 2090000, Tstart = 1580) annotation(
+        Placement(transformation(origin = {-326, 18}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
+      Gas.PressDrop PressDrop2(pstart = 2.13e6, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, A = 1, redeclare package Medium = Media.Air, dpnom = 0.19e5, wnom = 748, rhonom = 12, Tstart = 660) annotation(
+        Placement(transformation(origin = {-390, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_GT annotation(
+        Placement(transformation(origin = {-322, 10}, extent = {{60, -70}, {80, -50}})));
+      Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_GT(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
+        Placement(transformation(origin = {-220, -50}, extent = {{-10, -10}, {10, 10}})));
+      Modelica.Blocks.Continuous.FirstOrder fuelFlowActuator(k = 1, T = 4, y_start = 500, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-294, 6}, extent = {{-138, 92}, {-122, 108}})));
+      Modelica.Blocks.Continuous.FirstOrder powerSensor1_GT(k = 1, T = 1, y_start = 333e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-396, 106}, extent = {{146, -118}, {162, -102}})));
+      Modelica.Blocks.Interfaces.RealOutput generatedPower_GT annotation(
+        Placement(transformation(origin = {-404, -6}, extent = {{196, -10}, {216, 10}}), iconTransformation(extent = {{196, -10}, {216, 10}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateInletCC(redeclare package Medium = Media.Air) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-100, 30}, {-80, 50}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateOutletCC(redeclare package Medium = Media.FlueGas) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-24, 30}, {-4, 50}})));
+      // ============================================================
+      // Steam Cycle (Rankine) — sized for ~167 MW ST, 80 bar live steam
+      //   Steam flow ~105 kg/s, condenser at 5390 Pa
+      // ============================================================
+      Models.PrescribedPresureCondenser condenser(p = 5390, Vtot = 20, redeclare package Medium = Water, initOpt = ThermoPower.Choices.Init.Options.fixedState) annotation(
+        Placement(transformation(origin = {-32, 0}, extent = {{100, -100}, {140, -60}})));
+      Models.PrescribedSpeedPump prescribedSpeedPump(n0 = 1500, nominalMassFlowRate = 105, q_nom = {0, 0.105, 0.19}, redeclare package FluidMedium = Water, head_nom = {1100, 750, 0}, rho0 = 1000, nominalOutletPressure = 8000000, nominalInletPressure = 50000) annotation(
+        Placement(transformation(extent = {{40, -180}, {0, -140}})));
+      Modelica.Blocks.Continuous.FirstOrder nPumpActuator(k = 1, initType = Modelica.Blocks.Types.Init.SteadyState, T = 2, y_start = 1500) annotation(
+        Placement(transformation(origin = {20, -60}, extent = {{-280, -110}, {-260, -90}})));
+      Modelica.Blocks.Interfaces.RealOutput generatedPower_ST annotation(
+        Placement(transformation(origin = {-48, 10}, extent = {{290, 90}, {310, 110}}), iconTransformation(extent = {{290, 90}, {310, 110}})));
+      Modelica.Blocks.Continuous.FirstOrder powerSensor_ST_ctrl(k = 1, T = 1, y_start = 167e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-86, 10}, extent = {{240, 90}, {260, 110}})));
+      Modelica.Blocks.Interfaces.RealOutput voidFraction_ST annotation(
+        Placement(transformation(origin = {-155, -185}, extent = {{435, 165}, {465, 135}}), iconTransformation(extent = {{290, -110}, {310, -90}})));
+      Modelica.Blocks.Continuous.FirstOrder voidFractionSensor_ST(k = 1, T = 1, initType = Modelica.Blocks.Types.Init.SteadyState, y_start = 0.2) annotation(
+        Placement(transformation(origin = {-86, 68}, extent = {{240, -110}, {260, -90}})));
+      // Steam turbine — 105 kg/s, 80 bar inlet
+      ThermoPower.Water.SteamTurbineStodola steamTurbine(wstart = 105, wnom = 105, Kt = 0.0198, redeclare package Medium = Water, PRstart = 148, pnom = 8000000) annotation(
+        Placement(transformation(origin = {-48, -4}, extent = {{50, 30}, {100, 80}})));
+      Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_ST annotation(
+        Placement(transformation(origin = {-34, -2}, extent = {{138, 68}, {166, 40}})));
+      // Economizer — surfaces x1.28 (x1.7 x0.75), 80 bar steam, 768 kg/s gas
+      Models.HE economizer(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, N_F = 6, exchSurface_G = 51120, exchSurface_F = 4385, extSurfaceTub = 4958, gasVol = 17, fluidVol = 49.3, metalVol = 13.7, rhomcm = 7900*578.05, lambda = 20, gasNomFlowRate = 768, fluidNomFlowRate = 105, gamma_G = 30, gamma_F = 3000, rhonom_G = 1, Kfnom_F = 150, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, FFtype_F = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, N_G = 6, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart_G = 493.15, Tstart_M = 443.15, dpnom_G = 1000, dpnom_F = 34000) annotation(
+        Placement(transformation(extent = {{-120, -80}, {-80, -120}})));
+      // Evaporator — surfaces x1.28 (x1.7 x0.75), 80 bar (Tsat = 568 K)
+      Models.Evaporator evaporator(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, gasVol = 17, fluidVol = 21.1, metalVol = 8.16, gasNomFlowRate = 768, fluidNomFlowRate = 105, N = 4, rhom = 7900, cm = 578.05, gamma = 85, exchSurface = 31110, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart = 568.15, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, dpnom_G = 1000, rhonom_G = 1) annotation(
+        Placement(transformation(extent = {{-120, 0}, {-80, -40}})));
+      // Superheater — surfaces x1.28 (x1.7 x0.75), 80 bar steam
+      Models.HE superheater(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, N_F = 7, exchSurface_G = 2951, exchSurface_F = 574, extSurfaceTub = 644, gasVol = 17, fluidVol = 7.6, metalVol = 1.95, rhomcm = 7900*578.05, lambda = 20, gasNomFlowRate = 768, gamma_G = 90, gamma_F = 6000, fluidNomFlowRate = 105, rhonom_G = 1, Kfnom_F = 150, FluidPhaseStart = ThermoPower.Choices.FluidPhase.FluidPhases.Steam, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, FFtype_F = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, N_G = 7, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart_G = 803.15, Tstart_M = 623.15, dpnom_G = 1000, dpnom_F = 34000) annotation(
+        Placement(transformation(extent = {{-120, 80}, {-80, 40}})));
+      // ---- State readers ----
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasInletEvaporator(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-150, -30}, {-130, -10}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasInletEconomizer(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-150, -110}, {-130, -90}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasOutlet(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-70, -110}, {-50, -90}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterSuperheater_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterSuperheater_out(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, 100}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterEvaporator_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, -60}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterEconomizer_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, -140}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.Gas.SinkPressure sinkP_gas(T = 400, redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-40, -110}, {-20, -90}})));
+      Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_ST(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
+        Placement(transformation(origin = {-20, -2}, extent = {{200, 44}, {180, 64}})));
+      // ---- System & signals ----
+      inner System system(allowFlowReversal = false, initOpt = ThermoPower.Choices.Init.Options.steadyState, T_amb = 305.15, T_wb = 301.15) annotation(
+        Placement(transformation(extent = {{240, 160}, {260, 180}})));
+      // Fuel step: offset = 17.22 kg/s steady-state (scaled by 41.6/47.1 for LHV=47.1), +2.5 kg/s step at t=500 s
+      Modelica.Blocks.Sources.Step fuelFlowRateStep(height = 2.5, startTime = 500, offset = 17.22) annotation(
+        Placement(transformation(origin = {-72, 0}, extent = {{-440, 96}, {-420, 116}})));
+      Modelica.Blocks.Sources.Step voidFractionSetPoint(offset = 0.2, height = 0, startTime = 0) annotation(
+        Placement(transformation(origin = {-12, -46}, extent = {{-360, -120}, {-340, -100}})));
+      Models.PID voidFractionController(PVmin = 0.1, PVmax = 0.9, CSmax = 2500, PVstart = 0.1, CSstart = 0.5, steadyStateInit = true, CSmin = 500, Kp = -2, Ti = 300) annotation(
+        Placement(transformation(origin = {-12, -50}, extent = {{-300, -120}, {-280, -100}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateTurbineExhaust(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(origin = {-194, 60}, extent = {{-10, -10}, {10, 10}})));
+    equation
+// ==== GT Connections ====
+      connect(SourceW1.flange, CombustionChamber1.inf) annotation(
+        Line(points = {{-356, 98}, {-356, 85}, {-358, 85}, {-358, 74}}, color = {159, 159, 223}));
+      connect(SourceP1.flange, compressor.inlet) annotation(
+        Line(points = {{-466, 0}, {-438, 0}, {-438, -26}}, color = {159, 159, 223}));
+      connect(PressDrop1.outlet, turbine.inlet) annotation(
+        Line(points = {{-326, 8}, {-326, -20}}, color = {159, 159, 223}));
+      connect(compressor.outlet, PressDrop2.inlet) annotation(
+        Line(points = {{-390, -26}, {-390, 10}}, color = {159, 159, 223}));
+      connect(compressor.shaft_b, turbine.shaft_a) annotation(
+        Line(points = {{-396, -50}, {-358, -50}, {-358, -44}, {-320, -44}}));
+      connect(powerSensor_GT.flange_a, turbine.shaft_b) annotation(
+        Line(points = {{-262, -50}, {-273, -50}, {-273, -44}, {-284, -44}}));
+      connect(fuelFlowActuator.u, fuelFlowRateStep.y) annotation(
+        Line(points = {{-433.6, 106}, {-491, 106}}, color = {0, 0, 127}));
+      connect(fuelFlowActuator.y, SourceW1.in_w0) annotation(
+        Line(points = {{-415.2, 106}, {-374.2, 106}, {-374.2, 103}, {-372.2, 103}}, color = {0, 0, 127}));
+      connect(powerSensor_GT.power, powerSensor1_GT.u) annotation(
+        Line(points = {{-260, -61}, {-260, -32.5}, {-252, -32.5}, {-252, -4}}, color = {0, 0, 127}));
+      connect(powerSensor1_GT.y, generatedPower_GT) annotation(
+        Line(points = {{-233.2, -4}, {-215.7, -4}, {-215.7, -6}, {-198.2, -6}}, color = {0, 0, 127}));
+      connect(CombustionChamber1.ina, stateInletCC.outlet) annotation(
+        Line(points = {{-378, 54}, {-384, 54}, {-384, 56}, {-390, 56}}, color = {159, 159, 223}));
+      connect(stateInletCC.inlet, PressDrop2.outlet) annotation(
+        Line(points = {{-402, 54}, {-410, 54}, {-410, 34}}, color = {159, 159, 223}));
+      connect(stateOutletCC.inlet, CombustionChamber1.out) annotation(
+        Line(points = {{-326, 54}, {-332, 54}, {-332, 52}, {-338, 52}}, color = {159, 159, 223}));
+      connect(stateOutletCC.outlet, PressDrop1.inlet) annotation(
+        Line(points = {{-314, 54}, {-306, 54}, {-306, 32}}, color = {159, 159, 223}));
+      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(
+        Line(points = {{-210, -50}, {-240, -50}}));
+// ==== Bridge: GT exhaust -> HRSG ====
+      connect(turbine.outlet, stateTurbineExhaust.inlet) annotation(
+        Line(points = {{-278, -20}, {-278, 61}, {-200, 61}, {-200, 60}}, color = {159, 159, 223}));
+      connect(stateTurbineExhaust.outlet, superheater.gasIn) annotation(
+        Line(origin = {-1, 0}, points = {{-188, 60}, {-120, 60}}, color = {159, 159, 223}));
+// ==== ST Connections ====
+      connect(prescribedSpeedPump.inlet, condenser.waterOut) annotation(
+        Line(points = {{40, -160}, {88, -160}, {88, -100}}));
+      connect(generatedPower_ST, powerSensor_ST_ctrl.y) annotation(
+        Line(points = {{252, 110}, {175, 110}}, color = {0, 0, 127}));
+      connect(nPumpActuator.u, voidFractionController.CS) annotation(
+        Line(points = {{-262, -160}, {-292, -160}}, color = {0, 0, 127}));
+      connect(voidFractionController.SP, voidFractionSetPoint.y) annotation(
+        Line(points = {{-312, -156}, {-351, -156}}, color = {0, 0, 127}));
+      connect(voidFractionController.PV, voidFraction_ST) annotation(
+        Line(points = {{-312, -164}, {-326, -164}, {-326, -234}, {295, -234}, {295, -35}}, color = {0, 0, 127}));
+      connect(voidFraction_ST, voidFractionSensor_ST.y) annotation(
+        Line(points = {{295, -35}, {280.5, -35}, {280.5, -32}, {175, -32}}, color = {0, 0, 127}));
+      connect(powerSensor_ST.flange_a, steamTurbine.shaft_b) annotation(
+        Line(points = {{104, 52}, {91, 52}, {91, 51}, {43, 51}}));
+      connect(condenser.steamIn, steamTurbine.outlet) annotation(
+        Line(points = {{88, -60}, {88, 71}, {47, 71}}));
+      connect(prescribedSpeedPump.outlet, stateWaterEconomizer_in.inlet) annotation(
+        Line(points = {{0, -160}, {-100, -160}, {-100, -146}}));
+      connect(stateWaterEconomizer_in.outlet, economizer.waterIn) annotation(
+        Line(points = {{-100, -134}, {-100, -120}}));
+      connect(economizer.waterOut, stateWaterEvaporator_in.inlet) annotation(
+        Line(points = {{-100, -80}, {-100, -66}}));
+      connect(stateWaterEvaporator_in.outlet, evaporator.waterIn) annotation(
+        Line(points = {{-100, -54}, {-100, -40}}));
+      connect(economizer.gasIn, stateGasInletEconomizer.outlet) annotation(
+        Line(points = {{-120, -100}, {-128, -100}, {-134, -100}}));
+      connect(stateGasInletEconomizer.inlet, evaporator.gasOut) annotation(
+        Line(points = {{-146, -100}, {-160, -100}, {-160, -50}, {-40, -50}, {-40, -20}, {-80, -20}}));
+      connect(sinkP_gas.flange, stateGasOutlet.outlet) annotation(
+        Line(points = {{-40, -100}, {-54, -100}}));
+      connect(stateGasOutlet.inlet, economizer.gasOut) annotation(
+        Line(points = {{-66, -100}, {-74, -100}, {-80, -100}}));
+      connect(evaporator.gasIn, stateGasInletEvaporator.outlet) annotation(
+        Line(points = {{-120, -20}, {-134, -20}}));
+      connect(stateGasInletEvaporator.inlet, superheater.gasOut) annotation(
+        Line(points = {{-146, -20}, {-160, -20}, {-160, 30}, {-40, 30}, {-40, 60}, {-80, 60}}));
+      connect(evaporator.waterOut, stateWaterSuperheater_in.inlet) annotation(
+        Line(points = {{-100, 0}, {-100, 14}}));
+      connect(stateWaterSuperheater_in.outlet, superheater.waterIn) annotation(
+        Line(points = {{-100, 26}, {-100, 40}}));
+      connect(superheater.waterOut, stateWaterSuperheater_out.inlet) annotation(
+        Line(points = {{-100, 80}, {-100, 94}}));
+      connect(stateWaterSuperheater_out.outlet, steamTurbine.inlet) annotation(
+        Line(points = {{-100, 106}, {-100, 120}, {7, 120}, {7, 71}}));
+      connect(powerSensor_ST_ctrl.u, powerSensor_ST.power) annotation(
+        Line(points = {{152, 110}, {152, 108.5}, {108, 108.5}, {108, 109}, {107.5, 109}, {107.5, 67}, {107, 67}}, color = {0, 0, 127}));
+      connect(voidFractionSensor_ST.u, evaporator.voidFraction) annotation(
+        Line(points = {{152, -32}, {-78.8, -32}}, color = {0, 0, 127}));
+      connect(nPumpActuator.y, prescribedSpeedPump.nPump) annotation(
+        Line(points = {{-239, -160}, {-239, -160}, {-239, -158}, {-138, -158}, {-138, -194}, {160, -194}, {160, -148}, {34.4, -148}}, color = {0, 0, 127}));
+      connect(constantSpeed_ST.flange, powerSensor_ST.flange_b) annotation(
+        Line(points = {{160, 52}, {132, 52}}));
+      annotation(
+        experiment(StopTime = 2500, Tolerance = 1e-06),
+        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-520, 180}, {320, -240}}, initialScale = 0.1), graphics),
+        Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}, initialScale = 0.1), graphics = {Rectangle(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Text(origin = {-8, 10}, textColor = {0, 0, 255}, extent = {{-88, 84}, {100, -96}}, textString = "M701F")}),
+        Documentation(info = "<html><p>M701F-based 500 MW combined cycle power plant — open-loop simulation with Malaysian equatorial ambient (32 degC, 1.01325 bar). Based on Mitsubishi M701F gas turbine (PR=21, TIT=1580K, 748 kg/s air, exhaust 903K). 2:1 GT:ST power split: GT ~333 MW, ST ~167 MW. Single-pressure HRSG at 80 bar.</p></html>"));
+    end OpenLoopCombineCycle_M701F;
+
+    model CloseLoopCombineCycle_M701F "M701F-based 500 MW closed-loop Combined cycle — GT power tracking, Malaysian equatorial ambient (32 degC)"
+      extends Modelica.Icons.Example;
+      import ThermoPower;
+      // ============================================================
+      // Brayton Cycle (GT) — Mitsubishi M701F specification
+      //   Same turbomachinery maps as OpenLoopCombineCycle_M701F
+      //   Closed-loop: PID controller adjusts fuel flow to track GT power setpoint
+      //   Steady-state: GT ~331 MW, ST ~170 MW, fuel ~17.22 kg/s
+      // ============================================================
+      // Efficiency maps — M701F F-class levels (identical to open-loop)
+      parameter Real tableEtaC[6, 4] = [0, 95, 100, 105; 1, 88.3e-2, 86.7e-2, 86.1e-2; 2, 89.9e-2, 88.7e-2, 87.7e-2; 3, 89.0e-2, 87.95e-2, 87.2e-2; 4, 88.3e-2, 86.9e-2, 84.5e-2; 5, 85.1e-2, 83.5e-2, 81.9e-2];
+      parameter Real tableEtaT[5, 4] = [1, 90, 100, 110; 2.36, 92.6e-2, 93.1e-2, 92.9e-2; 2.88, 93.6e-2, 94.2e-2, 94.1e-2; 3.56, 94.1e-2, 94.2e-2, 94.1e-2; 4.46, 93.8e-2, 93.9e-2, 93.6e-2];
+      parameter Real tablePR[6, 4] = [0, 95, 100, 105; 1, 17.6, 21.1, 25.0; 2, 17.2, 20.7, 24.0; 3, 16.2, 19.9, 22.6; 4, 14.8, 19.0, 21.1; 5, 13.3, 16.8, 18.9];
+      parameter Real tablePhicC[6, 4] = [0, 95, 100, 105; 1, 109.5e-3, 123.0e-3, 133.8e-3; 2, 112.4e-3, 125.3e-3, 137.0e-3; 3, 116.1e-3, 129.3e-3, 138.4e-3; 4, 119.0e-3, 131.8e-3, 139.9e-3; 5, 121.0e-3, 133.3e-3, 141.0e-3];
+      parameter Real tablePhicT[5, 4] = [1, 90, 100, 110; 2.36, 14.74e-3, 14.74e-3, 14.74e-3; 2.88, 14.74e-3, 14.74e-3, 14.74e-3; 3.56, 14.74e-3, 14.74e-3, 14.74e-3; 4.46, 14.74e-3, 14.74e-3, 14.74e-3];
+      replaceable package FlueGas = ThermoPower.Media.FlueGas constrainedby Modelica.Media.Interfaces.PartialMedium "Flue gas model";
+      replaceable package Water = ThermoPower.Water.StandardWater constrainedby Modelica.Media.Interfaces.PartialPureSubstance "Fluid model";
+      // ---- GT Components (identical to open-loop M701F) ----
+      Gas.SourcePressure SourceP1(redeclare package Medium = Media.Air, p0 = 1.01325e5, T = 305.15) annotation(
+        Placement(transformation(origin = {-298, 20}, extent = {{-188, -30}, {-168, -10}})));
+      Gas.Compressor compressor(redeclare package Medium = Media.Air, tablePhic = tablePhicC, tableEta = tableEtaC, pstart_in = 1.01325e5, pstart_out = 2.13e6, Tstart_in = 305.15, tablePR = tablePR, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 660, explicitIsentropicEnthalpy = true, Tdes_in = 288.15, Ndesign = 157.08) annotation(
+        Placement(transformation(origin = {-286, 10}, extent = {{-158, -90}, {-98, -30}})));
+      Gas.Turbine turbine(redeclare package Medium = FlueGas, pstart_in = 2.06e6, pstart_out = 1.05e5, tablePhic = tablePhicT, tableEta = tableEtaT, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 903, Tdes_in = 1580, Tstart_in = 1580, Ndesign = 157.08) annotation(
+        Placement(transformation(origin = {-326, 16}, extent = {{-6, -90}, {54, -30}})));
+      Gas.CombustionChamber CombustionChamber1(gamma = 1, Cm = 1, pstart = 2.09e6, Tstart = 1580, V = 0.125, S = 0.125, initOpt = ThermoPower.Choices.Init.Options.steadyState, HH = 47.1e6) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-72, 20}, {-32, 60}})));
+      Gas.SourceMassFlow SourceW1(redeclare package Medium = Media.NaturalGas, w0 = 19.72, p0 = 2200000, T = 300, use_in_w0 = true) annotation(
+        Placement(transformation(origin = {-276, 18}, extent = {{-100, 70}, {-80, 90}})));
+      Gas.PressDrop PressDrop1(redeclare package Medium = FlueGas, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, wnom = 768, rhonom = 3.5, dpnom = 26000, pstart = 2090000, Tstart = 1580) annotation(
+        Placement(transformation(origin = {-326, 18}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
+      Gas.PressDrop PressDrop2(pstart = 2.13e6, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, A = 1, redeclare package Medium = Media.Air, dpnom = 0.19e5, wnom = 748, rhonom = 12, Tstart = 660) annotation(
+        Placement(transformation(origin = {-390, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_GT annotation(
+        Placement(transformation(origin = {-322, 10}, extent = {{60, -70}, {80, -50}})));
+      Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_GT(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
+        Placement(transformation(origin = {-220, -50}, extent = {{-10, -10}, {10, 10}})));
+      // Fuel flow actuator — y_start matches open-loop steady-state fuel for derated GT
+      Modelica.Blocks.Continuous.FirstOrder fuelFlowActuator(k = 1, T = 4, y_start = 19.72, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-283.25, 57.5}, extent = {{-120.75, 80.5}, {-106.75, 94.5}})));
+      Modelica.Blocks.Continuous.FirstOrder powerSensor1_GT(k = 1, T = 1, y_start = 281e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-396, 106}, extent = {{146, -118}, {162, -102}})));
+      Modelica.Blocks.Interfaces.RealOutput generatedPower_GT annotation(
+        Placement(transformation(origin = {-404, -6}, extent = {{196, -10}, {216, 10}}), iconTransformation(extent = {{196, -10}, {216, 10}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateInletCC(redeclare package Medium = Media.Air) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-100, 30}, {-80, 50}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateOutletCC(redeclare package Medium = Media.FlueGas) annotation(
+        Placement(transformation(origin = {-306, 14}, extent = {{-24, 30}, {-4, 50}})));
+      // ============================================================
+      // Steam Cycle (Rankine) — identical to OpenLoopCombineCycle_M701F
+      // ============================================================
+      Models.PrescribedPresureCondenser condenser(p = 5390, Vtot = 20, redeclare package Medium = Water, initOpt = ThermoPower.Choices.Init.Options.fixedState) annotation(
+        Placement(transformation(origin = {-32, 0}, extent = {{100, -100}, {140, -60}})));
+      Models.PrescribedSpeedPump prescribedSpeedPump(n0 = 1500, nominalMassFlowRate = 105, q_nom = {0, 0.105, 0.19}, redeclare package FluidMedium = Water, head_nom = {1100, 750, 0}, rho0 = 1000, nominalOutletPressure = 8000000, nominalInletPressure = 50000) annotation(
+        Placement(transformation(extent = {{40, -180}, {0, -140}})));
+      Modelica.Blocks.Continuous.FirstOrder nPumpActuator(k = 1, initType = Modelica.Blocks.Types.Init.SteadyState, T = 2, y_start = 1500) annotation(
+        Placement(transformation(origin = {20, -60}, extent = {{-280, -110}, {-260, -90}})));
+      Modelica.Blocks.Interfaces.RealOutput generatedPower_ST annotation(
+        Placement(transformation(origin = {-48, 10}, extent = {{290, 90}, {310, 110}}), iconTransformation(extent = {{290, 90}, {310, 110}})));
+      Modelica.Blocks.Continuous.FirstOrder powerSensor_ST_ctrl(k = 1, T = 1, y_start = 167e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
+        Placement(transformation(origin = {-86, 10}, extent = {{240, 90}, {260, 110}})));
+      Modelica.Blocks.Interfaces.RealOutput voidFraction_ST annotation(
+        Placement(transformation(origin = {-155, -185}, extent = {{435, 165}, {465, 135}}), iconTransformation(extent = {{290, -110}, {310, -90}})));
+      Modelica.Blocks.Continuous.FirstOrder voidFractionSensor_ST(k = 1, T = 1, initType = Modelica.Blocks.Types.Init.SteadyState, y_start = 0.2) annotation(
+        Placement(transformation(origin = {-86, 68}, extent = {{240, -110}, {260, -90}})));
+      // Steam turbine — 105 kg/s, 80 bar inlet
+      ThermoPower.Water.SteamTurbineStodola steamTurbine(wstart = 105, wnom = 105, Kt = 0.0198, redeclare package Medium = Water, PRstart = 148, pnom = 8000000) annotation(
+        Placement(transformation(origin = {-48, -4}, extent = {{50, 30}, {100, 80}})));
+      Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_ST annotation(
+        Placement(transformation(origin = {-34, -2}, extent = {{138, 68}, {166, 40}})));
+      // Economizer — surfaces x1.28 (x1.7 x0.75), 80 bar steam, 768 kg/s gas
+      Models.HE economizer(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, N_F = 6, exchSurface_G = 51120, exchSurface_F = 4385, extSurfaceTub = 4958, gasVol = 17, fluidVol = 49.3, metalVol = 13.7, rhomcm = 7900*578.05, lambda = 20, gasNomFlowRate = 768, fluidNomFlowRate = 105, gamma_G = 30, gamma_F = 3000, rhonom_G = 1, Kfnom_F = 150, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, FFtype_F = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, N_G = 6, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart_G = 493.15, Tstart_M = 443.15, dpnom_G = 1000, dpnom_F = 34000) annotation(
+        Placement(transformation(extent = {{-120, -80}, {-80, -120}})));
+      // Evaporator — surfaces x1.28 (x1.7 x0.75), 80 bar (Tsat = 568 K)
+      Models.Evaporator evaporator(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, gasVol = 17, fluidVol = 21.1, metalVol = 8.16, gasNomFlowRate = 768, fluidNomFlowRate = 105, N = 4, rhom = 7900, cm = 578.05, gamma = 85, exchSurface = 31110, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart = 568.15, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, dpnom_G = 1000, rhonom_G = 1) annotation(
+        Placement(transformation(extent = {{-120, 0}, {-80, -40}})));
+      // Superheater — surfaces x1.28 (x1.7 x0.75), 80 bar steam
+      Models.HE superheater(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, N_F = 7, exchSurface_G = 2951, exchSurface_F = 574, extSurfaceTub = 644, gasVol = 17, fluidVol = 7.6, metalVol = 1.95, rhomcm = 7900*578.05, lambda = 20, gasNomFlowRate = 768, gamma_G = 90, gamma_F = 6000, fluidNomFlowRate = 105, rhonom_G = 1, Kfnom_F = 150, FluidPhaseStart = ThermoPower.Choices.FluidPhase.FluidPhases.Steam, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, FFtype_F = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, N_G = 7, gasNomPressure = 101325, fluidNomPressure = 8000000, Tstart_G = 803.15, Tstart_M = 623.15, dpnom_G = 1000, dpnom_F = 34000) annotation(
+        Placement(transformation(extent = {{-120, 80}, {-80, 40}})));
+      // ---- State readers (identical to open-loop) ----
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasInletEvaporator(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-150, -30}, {-130, -10}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasInletEconomizer(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-150, -110}, {-130, -90}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateGasOutlet(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-70, -110}, {-50, -90}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterSuperheater_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterSuperheater_out(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, 100}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterEvaporator_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, -60}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_water stateWaterEconomizer_in(redeclare package Medium = Water) annotation(
+        Placement(transformation(origin = {-100, -140}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+      ThermoPower.Gas.SinkPressure sinkP_gas(T = 400, redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(extent = {{-40, -110}, {-20, -90}})));
+      Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_ST(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
+        Placement(transformation(origin = {-20, -2}, extent = {{200, 44}, {180, 64}})));
+      // ---- System & signals ----
+      inner System system(allowFlowReversal = false, initOpt = ThermoPower.Choices.Init.Options.steadyState, T_amb = 305.15, T_wb = 301.15) annotation(
+        Placement(transformation(extent = {{240, 160}, {260, 180}})));
+      // ============================================================
+      // Closed-loop control: GT power tracking via fuel flow
+      //   PV = measured GT power (W), CS = fuel mass flow (kg/s)
+      //   Steady-state: GT = 281 MW → fuel ~19.72 kg/s (derated, Tdes_in=288.15)
+      //   At 32°C, compressor operates at 97.2% corrected speed (off-design)
+      //   PVstart = 281e6/500e6 = 0.562
+      //   CSstart = (19.72-10)/(21-10) = 0.884
+      // ============================================================
+      // Power setpoint: 281 MW steady, ramp +5 MW at t=800s over 50s
+      Modelica.Blocks.Sources.Ramp powerSetPoint(offset = 281e6, height = 5e6, duration = 50, startTime = 800) annotation(
+        Placement(transformation(origin = {-76, 44}, extent = {{-440, 96}, {-420, 116}})));
+      // GT power PID — conservative tuning for robust first-run
+      //   Kp=3: moderate proportional gain
+      //   Ti=60: slow integral to avoid oscillation
+      //   holdWhenSimplified=true: aids homotopy initialization
+      Models.PID powerController(PVmin = 0, PVmax = 500e6, CSmin = 10, CSmax = 21, PVstart = 0.562, CSstart = 0.884, steadyStateInit = true, holdWhenSimplified = true, Kp = 3, Ti = 60) annotation(
+        Placement(transformation(origin = {-152, 40}, extent = {{-300, 96}, {-280, 116}})));
+      // ---- Void fraction controller (identical to open-loop) ----
+      Modelica.Blocks.Sources.Step voidFractionSetPoint(offset = 0.2, height = 0, startTime = 0) annotation(
+        Placement(transformation(origin = {-12, -46}, extent = {{-360, -120}, {-340, -100}})));
+      Models.PID voidFractionController(PVmin = 0.1, PVmax = 0.9, CSmax = 3500, PVstart = 0.125, CSstart = 0.333, steadyStateInit = true, CSmin = 500, Kp = -2, Ti = 150) annotation(
+        Placement(transformation(origin = {-12, -50}, extent = {{-300, -120}, {-280, -100}})));
+      ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateTurbineExhaust(redeclare package Medium = FlueGas) annotation(
+        Placement(transformation(origin = {-194, 60}, extent = {{-10, -10}, {10, 10}})));
+    equation
+// ==== GT Connections ====
+      connect(SourceW1.flange, CombustionChamber1.inf) annotation(
+        Line(points = {{-356, 98}, {-356, 85}, {-358, 85}, {-358, 74}}, color = {159, 159, 223}));
+      connect(SourceP1.flange, compressor.inlet) annotation(
+        Line(points = {{-466, 0}, {-438, 0}, {-438, -26}}, color = {159, 159, 223}));
+      connect(PressDrop1.outlet, turbine.inlet) annotation(
+        Line(points = {{-326, 8}, {-326, -20}}, color = {159, 159, 223}));
+      connect(compressor.outlet, PressDrop2.inlet) annotation(
+        Line(points = {{-390, -26}, {-390, 10}}, color = {159, 159, 223}));
+      connect(compressor.shaft_b, turbine.shaft_a) annotation(
+        Line(points = {{-396, -50}, {-358, -50}, {-358, -44}, {-320, -44}}));
+      connect(powerSensor_GT.flange_a, turbine.shaft_b) annotation(
+        Line(points = {{-262, -50}, {-273, -50}, {-273, -44}, {-284, -44}}));
+// ==== Closed-loop fuel control ====
+      connect(fuelFlowActuator.u, powerController.CS) annotation(
+        Line(points = {{-405, 145}, {-432, 145}, {-432, 146}}, color = {0, 0, 127}));
+      connect(powerController.SP, powerSetPoint.y) annotation(
+        Line(points = {{-452, 150}, {-495, 150}}, color = {0, 0, 127}));
+      connect(powerController.PV, generatedPower_GT) annotation(
+        Line(points = {{-452, 142}, {-480, 142}, {-480, 170}, {-180, 170}, {-180, -6}}, color = {0, 0, 127}));
+      connect(fuelFlowActuator.y, SourceW1.in_w0) annotation(
+        Line(points = {{-389, 145}, {-374.2, 145}, {-374.2, 103}, {-372.2, 103}}, color = {0, 0, 127}));
+      connect(powerSensor_GT.power, powerSensor1_GT.u) annotation(
+        Line(points = {{-260, -61}, {-260, -32.5}, {-252, -32.5}, {-252, -4}}, color = {0, 0, 127}));
+      connect(powerSensor1_GT.y, generatedPower_GT) annotation(
+        Line(points = {{-233.2, -4}, {-215.7, -4}, {-215.7, -6}, {-198.2, -6}}, color = {0, 0, 127}));
+      connect(CombustionChamber1.ina, stateInletCC.outlet) annotation(
+        Line(points = {{-378, 54}, {-384, 54}, {-384, 56}, {-390, 56}}, color = {159, 159, 223}));
+      connect(stateInletCC.inlet, PressDrop2.outlet) annotation(
+        Line(points = {{-402, 54}, {-410, 54}, {-410, 34}}, color = {159, 159, 223}));
+      connect(stateOutletCC.inlet, CombustionChamber1.out) annotation(
+        Line(points = {{-326, 54}, {-332, 54}, {-332, 52}, {-338, 52}}, color = {159, 159, 223}));
+      connect(stateOutletCC.outlet, PressDrop1.inlet) annotation(
+        Line(points = {{-314, 54}, {-306, 54}, {-306, 32}}, color = {159, 159, 223}));
+      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(
+        Line(points = {{-210, -50}, {-240, -50}}));
+// ==== Bridge: GT exhaust -> HRSG ====
+      connect(turbine.outlet, stateTurbineExhaust.inlet) annotation(
+        Line(points = {{-278, -20}, {-278, 61}, {-200, 61}, {-200, 60}}, color = {159, 159, 223}));
+      connect(stateTurbineExhaust.outlet, superheater.gasIn) annotation(
+        Line(origin = {-1, 0}, points = {{-188, 60}, {-120, 60}}, color = {159, 159, 223}));
+// ==== ST Connections (identical to open-loop) ====
+      connect(prescribedSpeedPump.inlet, condenser.waterOut) annotation(
+        Line(points = {{40, -160}, {88, -160}, {88, -100}}));
+      connect(generatedPower_ST, powerSensor_ST_ctrl.y) annotation(
+        Line(points = {{252, 110}, {175, 110}}, color = {0, 0, 127}));
+      connect(nPumpActuator.u, voidFractionController.CS) annotation(
+        Line(points = {{-262, -160}, {-292, -160}}, color = {0, 0, 127}));
+      connect(voidFractionController.SP, voidFractionSetPoint.y) annotation(
+        Line(points = {{-312, -156}, {-351, -156}}, color = {0, 0, 127}));
+      connect(voidFractionController.PV, voidFraction_ST) annotation(
+        Line(points = {{-312, -164}, {-326, -164}, {-326, -234}, {295, -234}, {295, -35}}, color = {0, 0, 127}));
+      connect(voidFraction_ST, voidFractionSensor_ST.y) annotation(
+        Line(points = {{295, -35}, {280.5, -35}, {280.5, -32}, {175, -32}}, color = {0, 0, 127}));
+      connect(powerSensor_ST.flange_a, steamTurbine.shaft_b) annotation(
+        Line(points = {{104, 52}, {91, 52}, {91, 51}, {43, 51}}));
+      connect(condenser.steamIn, steamTurbine.outlet) annotation(
+        Line(points = {{88, -60}, {88, 71}, {47, 71}}));
+      connect(prescribedSpeedPump.outlet, stateWaterEconomizer_in.inlet) annotation(
+        Line(points = {{0, -160}, {-100, -160}, {-100, -146}}));
+      connect(stateWaterEconomizer_in.outlet, economizer.waterIn) annotation(
+        Line(points = {{-100, -134}, {-100, -120}}));
+      connect(economizer.waterOut, stateWaterEvaporator_in.inlet) annotation(
+        Line(points = {{-100, -80}, {-100, -66}}));
+      connect(stateWaterEvaporator_in.outlet, evaporator.waterIn) annotation(
+        Line(points = {{-100, -54}, {-100, -40}}));
+      connect(economizer.gasIn, stateGasInletEconomizer.outlet) annotation(
+        Line(points = {{-120, -100}, {-128, -100}, {-134, -100}}));
+      connect(stateGasInletEconomizer.inlet, evaporator.gasOut) annotation(
+        Line(points = {{-146, -100}, {-160, -100}, {-160, -50}, {-40, -50}, {-40, -20}, {-80, -20}}));
+      connect(sinkP_gas.flange, stateGasOutlet.outlet) annotation(
+        Line(points = {{-40, -100}, {-54, -100}}));
+      connect(stateGasOutlet.inlet, economizer.gasOut) annotation(
+        Line(points = {{-66, -100}, {-74, -100}, {-80, -100}}));
+      connect(evaporator.gasIn, stateGasInletEvaporator.outlet) annotation(
+        Line(points = {{-120, -20}, {-134, -20}}));
+      connect(stateGasInletEvaporator.inlet, superheater.gasOut) annotation(
+        Line(points = {{-146, -20}, {-160, -20}, {-160, 30}, {-40, 30}, {-40, 60}, {-80, 60}}));
+      connect(evaporator.waterOut, stateWaterSuperheater_in.inlet) annotation(
+        Line(points = {{-100, 0}, {-100, 14}}));
+      connect(stateWaterSuperheater_in.outlet, superheater.waterIn) annotation(
+        Line(points = {{-100, 26}, {-100, 40}}));
+      connect(superheater.waterOut, stateWaterSuperheater_out.inlet) annotation(
+        Line(points = {{-100, 80}, {-100, 94}}));
+      connect(stateWaterSuperheater_out.outlet, steamTurbine.inlet) annotation(
+        Line(points = {{-100, 106}, {-100, 120}, {7, 120}, {7, 71}}));
+      connect(powerSensor_ST_ctrl.u, powerSensor_ST.power) annotation(
+        Line(points = {{152, 110}, {152, 108.5}, {108, 108.5}, {108, 109}, {107.5, 109}, {107.5, 67}, {107, 67}}, color = {0, 0, 127}));
+      connect(voidFractionSensor_ST.u, evaporator.voidFraction) annotation(
+        Line(points = {{152, -32}, {-78.8, -32}}, color = {0, 0, 127}));
+      connect(nPumpActuator.y, prescribedSpeedPump.nPump) annotation(
+        Line(points = {{-239, -160}, {-239, -160}, {-239, -158}, {-138, -158}, {-138, -194}, {160, -194}, {160, -148}, {34.4, -148}}, color = {0, 0, 127}));
+      connect(constantSpeed_ST.flange, powerSensor_ST.flange_b) annotation(
+        Line(points = {{160, 52}, {132, 52}}));
+      annotation(
+        experiment(StopTime = 2500, Tolerance = 1e-06),
+        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-520, 180}, {320, -240}}, initialScale = 0.1), graphics),
+        Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}, initialScale = 0.1), graphics = {Rectangle(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Text(origin = {-8, 10}, textColor = {0, 0, 255}, extent = {{-88, 84}, {100, -96}}, textString = "M701F CL")}),
+        Documentation(info = "<html><p>M701F-based 500 MW closed-loop combined cycle power plant. PID controller adjusts fuel flow to track GT power setpoint (331 MW baseline, +10 MW ramp at t=800s). Malaysian equatorial ambient (32 degC, 1.01325 bar). Based on Mitsubishi M701F gas turbine (PR=21, TIT=1580K, 748 kg/s air, exhaust 903K). 2:1 GT:ST power split. Single-pressure HRSG at 80 bar.</p></html>"));
+    end CloseLoopCombineCycle_M701F;
 
     model CloseLoopCombineCycle "Combined cycle simulation"
       extends Modelica.Icons.Example;
@@ -873,7 +1660,6 @@ This is a simple model of a steam plant.
         Placement(transformation(origin = {-396, 106}, extent = {{146, -118}, {162, -102}})));
       Modelica.Blocks.Interfaces.RealOutput generatedPower_GT annotation(
         Placement(transformation(origin = {-404, -6}, extent = {{196, -10}, {216, 10}}), iconTransformation(extent = {{196, -10}, {216, 10}})));
-      
       ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateInletCC(redeclare package Medium = Media.Air) annotation(
         Placement(transformation(origin = {-306, 14}, extent = {{-100, 30}, {-80, 50}})));
       ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateOutletCC(redeclare package Medium = Media.FlueGas) annotation(
@@ -969,7 +1755,8 @@ This is a simple model of a steam plant.
         Line(points = {{-326, 54}, {-332, 54}, {-332, 52}, {-338, 52}}, color = {159, 159, 223}));
       connect(stateOutletCC.outlet, PressDrop1.inlet) annotation(
         Line(points = {{-314, 54}, {-306, 54}, {-306, 32}}, color = {159, 159, 223}));
-      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(Line(points = {{-210, -50}, {-240, -50}}));
+      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(
+        Line(points = {{-210, -50}, {-240, -50}}));
 // Bridge: GT exhaust to ST HRSG
       connect(turbine.outlet, stateTurbineExhaust.inlet) annotation(
         Line(points = {{-278, -26}, {-278, 61}, {-204, 61}, {-204, 60}}, color = {159, 159, 223}));
@@ -1027,7 +1814,7 @@ This is a simple model of a steam plant.
       connect(constantSpeed_ST.flange, powerSensor_ST.flange_b) annotation(
         Line(points = {{160, 52}, {132, 52}}));
       annotation(
-        experiment(StopTime = 1000, Tolerance = 1e-06),
+        experiment(StopTime = 2500, Tolerance = 1e-06),
         Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-520, 180}, {320, -240}}, initialScale = 0.1)),
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}, initialScale = 0.1), graphics = {Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Text(extent = {{-88, 84}, {100, -96}}, lineColor = {0, 0, 255}, textString = "CC")}),
         Documentation(info = "<html><p>Combined cycle power plant simulation model.</p></html>"));
