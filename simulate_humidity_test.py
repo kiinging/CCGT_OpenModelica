@@ -95,7 +95,7 @@ def main():
     iso = simulate_model(
         omc,
         "OpenLoopCombineCycle_M701F_ISO",
-        "ISO conditions: 15°C, Media.Air (1.5% H2O)"
+        "ISO conditions: 15°C, Media.ISOAir (0.63% H2O, 60% RH)"
     )
 
     # --- Simulate Tropical model (now with TropicalAir) ---

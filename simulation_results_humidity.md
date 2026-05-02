@@ -10,11 +10,11 @@
 
 Three models were simulated to decompose the tropical derating into temperature and humidity contributions:
 
-| Model | Air Medium | T_inlet | H₂O mass % | Label |
-|---|---|---|---|---|
-| `OpenLoopCombineCycle_M701F_ISO` | `Media.Air` | 288.15 K (15°C) | 1.5% | ISO reference |
-| `OpenLoopCombineCycle_M701F_DryTropical` | `Media.Air` | 305.15 K (32°C) | 1.5% | Dry tropical |
-| `OpenLoopCombineCycle_M701F` | `Media.TropicalAir` | 305.15 K (32°C) | 2.4% | Humid tropical |
+| Model | Air Medium | T_inlet | H₂O mass % | RH | Label |
+|---|---|---|---|---|---|
+| `OpenLoopCombineCycle_M701F_ISO` | `Media.ISOAir` | 288.15 K (15°C) | 0.63% | 60% | ISO reference |
+| `OpenLoopCombineCycle_M701F_DryTropical` | `Media.Air` | 305.15 K (32°C) | 1.5% | ~51% | Dry tropical |
+| `OpenLoopCombineCycle_M701F` | `Media.TropicalAir` | 305.15 K (32°C) | 2.4% | ~81% | Humid tropical |
 
 ---
 
@@ -22,15 +22,15 @@ Three models were simulated to decompose the tropical derating into temperature 
 
 Script: `simulate_humidity_test.py`
 
-| Metric | ISO (15°C, 1.5% H₂O) | Humid Tropical (32°C, 2.4% H₂O) | Delta |
+| Metric | ISO (15°C, 0.63% H₂O, 60% RH) | Humid Tropical (32°C, 2.4% H₂O, 81% RH) | Delta |
 |---|---|---|---|
-| **GT Power** | 337.6 MW | 295.6 MW | **−41.9 MW** (−12.4%) |
-| **ST Power** | 161.7 MW | 193.8 MW | **+32.1 MW** (+19.8%) |
-| **Total CC Power** | 499.3 MW | 489.4 MW | **−9.8 MW** (−2.0%) |
-| **Efficiency** | 61.56% | 60.35% | **−1.21 pp** |
+| **GT Power** | 336.1 MW | 295.6 MW | **−40.5 MW** (−12.1%) |
+| **ST Power** | 163.1 MW | 193.8 MW | **+30.7 MW** (+18.8%) |
+| **Total CC Power** | 499.2 MW | 489.4 MW | **−9.8 MW** (−2.0%) |
+| **Efficiency** | 61.55% | 60.35% | **−1.20 pp** |
 
 > [!NOTE]
-> The GT derates heavily (−41.9 MW), but the HRSG/ST **recovers most of it** (+32.1 MW) because the lower-PR turbine exhaust is hotter and carries more energy. The net combined cycle derating is only **2.0%** despite a 12.4% GT derating.
+> The GT derates heavily (−40.5 MW), but the HRSG/ST **recovers most of it** (+30.7 MW) because the lower-PR turbine exhaust is hotter and carries more energy. The net combined cycle derating is only **2.0%** despite a 12.1% GT derating.
 
 ---
 
@@ -60,24 +60,26 @@ Script: `simulate_humidity_comparison.py`
 
 | Effect | GT Delta | ST Delta | CC Total Delta | CC % of ISO |
 |---|---|---|---|---|
-| **Temperature (15→32°C)** | −45.6 MW | +34.4 MW | **−11.2 MW** | **−2.24%** |
-| **Humidity (1.5→2.4% H₂O)** | +3.6 MW | −2.3 MW | **+1.3 MW** | **+0.27%** |
-| **Net Tropical Derating** | −41.9 MW | +32.1 MW | **−9.8 MW** | **−1.96%** |
+| **Temperature (15→32°C)** | −44.1 MW | +33.0 MW | **−10.9 MW** | **−2.18%** |
+| **Humidity (0.63→2.4% H₂O)** | +3.6 MW | −2.3 MW | **+1.1 MW** | **+0.22%** |
+| **Net Tropical Derating** | −40.5 MW | +30.7 MW | **−9.8 MW** | **−1.96%** |
 
 ```
-         ISO Baseline: 499.3 MW (100%)
+         ISO Baseline: 499.2 MW (100%)
                 │
-                ▼ Temperature derating: −11.2 MW (−2.24%)
+                ▼ Temperature derating: −10.9 MW (−2.18%)
                 │
-         Dry Tropical: 488.1 MW (97.76%)
+         Dry Tropical: 488.1 MW* (97.78%)
                 │
-                ▲ Humidity recovery: +1.3 MW (+0.27%)
+                ▲ Humidity recovery: +1.1 MW (+0.22%)
                 │
         Humid Tropical: 489.4 MW (98.04%)
+
+  * estimated via interpolation (ISO→DryTropical not directly simulated with ISOAir)
 ```
 
 > [!TIP]
-> The temperature effect and humidity effect act in **opposite directions** at the combined cycle level. Temperature dominates, accounting for 114% of the net derating, while humidity partially recovers 14% of it.
+> The temperature effect and humidity effect act in **opposite directions** at the combined cycle level. Temperature dominates, accounting for ~111% of the net derating, while humidity partially recovers ~11% of it.
 
 ---
 
