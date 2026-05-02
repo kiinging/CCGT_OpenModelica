@@ -1,0 +1,17 @@
+The conversion at 32°C (your tropical ambient):
+
+H₂O Mass Fraction → Relative Humidity
+X_H₂O	Humidity ratio ω	p_w (Pa)	p_sat at 32°C (Pa)	RH
+1.5%	0.01523 kg/kg	2,421	4,759	~51%
+2.4%	0.02459 kg/kg	3,852	4,759	~81%
+
+The Math
+Step 1:  ω = X_H2O / (1 - X_H2O)
+Step 2:  p_w = ω × p_atm / (0.622 + ω)
+Step 3:  p_sat(32°C) = 611.2 × exp(17.67 × 32 / 275.5) ≈ 4759 Pa
+Step 4:  RH = p_w / p_sat
+
+Model	X_H₂O	RH at 32°C	Label
+Media.Air (dry tropical)	1.5%	~51% RH	Low humidity baseline
+Media.TropicalAir (humid tropical)	2.4%	~81% RH	Malaysian equatorial conditions
+Note: The 1.5% H₂O default in Media.Air was originally set for ISO 15°C, where it would actually be supersaturated (~142% RH — physically impossible as pure vapour). ThermoPower uses it as a generic modelling reference, not a true atmospheric condition. At 32°C, it translates to a realistic ~51% RH.
