@@ -323,16 +323,7 @@ model OpenLoopCombineCycle_M701F_Humid
 
 ---
 
-## 6. Recommendation for Your Thesis
-
-Option A has been **implemented and verified**. The key changes made:
-
-1. ✅ Created `Media.TropicalAir` in [Media.mo](file:///c:/Users/user/OneDrive/Documents/FYP1/CCGT_OpenModelica-main%20-%20M701F%20working%20model/CCGT_OpenModelica-main/ThermoPower/ThermoPower/Media.mo) with `reference_X = {0.2264, 0.024, 0.005, 0.7446}`
-2. ✅ Updated `OpenLoopCombineCycle_M701F` and `CloseLoopCombineCycle_M701F` to use `TropicalAir`
-3. ✅ Created `DryTropical_M701F.mo` standalone model for humidity isolation tests
-4. ✅ Ran three-way comparison (ISO / Dry Tropical / Humid Tropical)
-
-### Key thesis findings:
+### Key findings:
 
 1. **Temperature dominates**: 114% of net CC derating comes from temperature alone
 2. **Humidity partially recovers**: Adds +1.3 MW (+0.27%), offsetting 14% of temperature derating
