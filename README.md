@@ -393,12 +393,12 @@ The final parameter values were reached through four simulation iterations:
 
 Below are the extracted transient plots and simulation results from the OpenLoopCombineCycle operation:
 
-![Plot 1](images_500MW_M701F/Image1.png)
-![Plot 2](images_500MW_M701F/Image2.png)
-![Plot 3](images_500MW_M701F/Image3.png)
-![Plot 4](images_500MW_M701F/Image4.png)
-![Plot 5](images_500MW_M701F/Image5.png)
-![Plot 6](images_500MW_M701F/Image6.png)
-![Plot 7](images_500MW_M701F/Image7.png)
-![Plot 8](images_500MW_M701F/Image8.png)
-![Plot 9](images_500MW_M701F/Image9.png)
+![GT and ST Power Output](images_M701F_ISO/genpower_GT_ST.png)
+![Fuel Flow Rate](images_M701F_ISO/fuelflowrate.png)
+![Turbine Exhaust Temperature](images_M701F_ISO/stateTurbineExhaust.T.png)
+![Superheater Gas Inlet Mass Flow](images_M701F_ISO/superheater.gasIn_massflow.png)
+![Superheater Gas Inlet Pressure](images_M701F_ISO/superheater_gasIn_pressure.png)
+![Stack Exhaust Temperature](images_M701F_ISO/stateGasOutlet.T.png)
+![Evaporator Void Fraction](images_M701F_ISO/evaporator.voidFraction.png)
+![Feedwater Pump Speed](images_M701F_ISO/prescribedspeedpump.Npump.png)
+
