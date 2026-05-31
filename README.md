@@ -60,7 +60,7 @@ The project directory structure is as follows:
 CCGT_OpenModelica/
 ├── ThermoPower/
 │   └── ThermoPower/
-│       └── CombineCycle.mo      ← Main model file
+│       └── package.mo           ← Main package file
 ├── images/                      ← Simulation result plots
 └── README.md
 ```
@@ -69,8 +69,14 @@ CCGT_OpenModelica/
 
 1. Open **OMEdit**.
 2. From the top menu, select **File → Open Model/Library File(s)**.
-3. Navigate to `ThermoPower/ThermoPower/` and open `CombineCycle.mo`.
+3. Navigate to `ThermoPower/ThermoPower/` and open `package.mo`.
 4. In the **Libraries** panel on the left, expand `ThermoPower → CombineCycle → Simulators`. You should see both `OpenLoopCombineCycle` and `CloseLoopCombineCycle`.
+
+![Diagram View of the Open-Loop Combined Cycle Power Plant (OpenLoopCombineCycle)](images/1-OpenLoopCCPP.png)
+*Figure 1: Diagram View of the Open-Loop Combined Cycle Power Plant*
+
+![Diagram View of the Closed-Loop Combined Cycle Power Plant (CloseLoopCombineCycle)](images/2-ClosedLoopCCPP.png)
+*Figure 2: Diagram View of the Closed-Loop Combined Cycle Power Plant*
 
 ---
 
@@ -107,7 +113,7 @@ Both models share an **identical physical plant**. The open-loop model is simple
 
 1. Run the open-loop model to establish baseline steady-state conditions.
 2. Switch to the closed-loop model to study the PID controller's effect on the same physical system.
-3. Compare the fuel flow rate, TIT, GT power, and ST power responses between the two models.
+3. Compare the fuel flow rate, Turbine Inlet Temperature (TIT), GT power, and ST power responses between the two models.
 
 ---
 
@@ -289,17 +295,22 @@ The pinch point is the minimum temperature difference between the hot gas stream
 
 ## 10. Simulation Result Plots
 
-The following plots were obtained from the `OpenLoopCombineCycle` simulation (fuel step from 6.39 kg/s to 7.29 kg/s at *t* = 500 s):
+The following plots were obtained from both the `OpenLoopCombineCycle` and `CloseLoopCombineCycle` simulations, demonstrating the comparative transient responses of key plant parameters:
 
-![Plot 1](images/image1.png)
-![Plot 2](images/image2.png)
-![Plot 3](images/image3.png)
-![Plot 4](images/image4.png)
-![Plot 5](images/image5.png)
-![Plot 6](images/image6.png)
-![Plot 7](images/image7.png)
-![Plot 8](images/image8.png)
-![Plot 9](images/image9.png)
+![Fuel Injection Rate](images/3-FuelRate.png)
+*Figure 3: Open-loop and closed-loop fuel injection mass flow rates into the Gas Turbine.*
+
+![Turbine Inlet Temperature (TIT)](images/4-TIT_stateOutletCC_T.png)
+*Figure 4: Open-loop and closed-loop transient response of the Turbine Inlet Temperature (TIT) exiting the combustion chamber.*
+
+![Temperature to HRSG](images/4b-Temp_To_HRSG.png)
+*Figure 5: Temperature of the exhaust gas measured at the inlet of the Heat Recovery Steam Generator (HRSG).*
+
+![Open-Loop Power Output](images/5-openLoopOutputPowers.png)
+*Figure 6: Open-loop electrical power output from the Gas Turbine (GT) and Steam Turbine (ST) subsystems.*
+
+![Closed-Loop Power Output](images/6-closedLoopOutputPowers.png)
+*Figure 7: Closed-loop electrical power output from the Gas Turbine (GT) and Steam Turbine (ST) subsystems, demonstrating PID control regulation.*
 
 ---
 
