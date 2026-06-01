@@ -184,9 +184,9 @@ The thermal power input to the cycle is determined by the fuel mass flow rate an
 
 $$\dot{Q}_\text{in} = \dot{m}_\text{fuel} \times HH$$
 
-At the nominal operating point (ṁ_fuel ≈ 6.4 kg/s):
+At the feedback-controlled operating point for a **160 MW** total power set-point ($\dot{m}_\text{fuel} \approx 7.33$ kg/s):
 
-$$\dot{Q}_\text{in} = 6.4 \, \text{kg/s} \times 41.6 \times 10^6 \, \text{J/kg} \approx 266 \, \text{MW}$$
+$$\dot{Q}_\text{in} = 7.33 \, \text{kg/s} \times 41.6 \times 10^6 \, \text{J/kg} \approx 305 \, \text{MW}$$
 
 In the model, this is governed by the `SourceW1` (fuel mass flow source) and `CombustionChamber1` components. The resulting hot flue gas exits at the **Turbine Inlet Temperature (TIT)**, observable at `stateOutletCC.T`.
 
@@ -194,13 +194,15 @@ In the model, this is governed by the `SourceW1` (fuel mass flow source) and `Co
 
 The hot flue gas at TIT (≈ 1600 K) expands through the gas turbine, performing shaft work. The shaft is coupled to a generator via the `powerSensor_GT` component. The gross electrical output of the GT is monitored at `generatedPower_GT`.
 
-At the nominal operating condition, the GT produces approximately **60–76 MW**, yielding a standalone GT efficiency of:
+At this 160 MW set-point, the GT produces approximately **95.2 MW**, yielding a standalone GT efficiency of:
 
-$$\eta_\text{GT} = \frac{\dot{W}_\text{GT}}{\dot{Q}_\text{in}} \approx \frac{62 \, \text{MW}}{266 \, \text{MW}} \approx 23\%$$
+$$\eta_\text{GT} = \frac{\dot{W}_\text{GT}}{\dot{Q}_\text{in}} \approx \frac{95.2 \, \text{MW}}{305 \, \text{MW}} \approx 31\%$$
+
+> **Model Limitation — GT Efficiency & Pressure Ratio:** While real-world advanced GTs might achieve slightly higher standalone efficiencies, this model's GT efficiency peaks around 31%. This is a fundamental thermodynamic limitation of the simple cycle configuration used here. The compressor Pressure Ratio (PR) is approximately 24, which is mathematically near the optimal PR for maximizing specific work at this Turbine Inlet Temperature. Increasing the PR further without introducing advanced cycle modifications (like intercooling or reheat) would not yield meaningful efficiency gains and would negatively degrade the high-grade thermal energy available in the exhaust for the Steam Cycle.
 
 ### 5.3 GT Exhaust → HRSG
 
-The turbine exhaust gas (≈ 900 K, 306 kg/s) is routed to the HRSG inlet. In the model, this coupling is represented by the connection from `turbine.outlet` through `stateTurbineExhaust` to `superheater.gasIn`. The exhaust gas temperature at this point is observable at `stateTurbineExhaust.T`.
+The turbine exhaust gas (≈ 941 K / 668 °C, 306 kg/s) is routed to the HRSG inlet. In the model, this coupling is represented by the connection from `turbine.outlet` through `stateTurbineExhaust` to `superheater.gasIn`. The exhaust gas temperature at this point is observable at `stateTurbineExhaust.T`.
 
 ### 5.4 HRSG → Steam Turbine Electrical Output
 
@@ -232,15 +234,15 @@ The overall plant thermal efficiency is defined as:
 
 $$\eta_\text{CCGT} = \frac{\dot{W}_\text{GT} + \dot{W}_\text{ST}}{\dot{Q}_\text{in}}$$
 
-At the nominal operating condition in this simulation:
+At the **160 MW** operating condition in this simulation:
 
 | Quantity | Value |
 |---|---|
-| Fuel thermal input, $\dot{Q}_\text{in}$ | ≈ 266 MW |
-| GT electrical output, $\dot{W}_\text{GT}$ | ≈ 62 MW (≈ 23%) |
-| ST electrical output, $\dot{W}_\text{ST}$ | ≈ 58 MW (≈ 22%) |
-| **Total combined output** | **≈ 120 MW** |
-| **Overall CCGT efficiency** | **≈ 45%** |
+| Fuel thermal input, $\dot{Q}_\text{in}$ | ≈ 305 MW |
+| GT electrical output, $\dot{W}_\text{GT}$ | ≈ 95.2 MW (≈ 31%) |
+| ST electrical output, $\dot{W}_\text{ST}$ | ≈ 64.8 MW (≈ 21%) |
+| **Total combined output** | **160 MW** |
+| **Overall CCGT efficiency** | **≈ 52%** |
 
 This overall efficiency is consistent with the lower end of real-world single-pressure CCGT plants, where multi-pressure HRSG designs and advanced turbine cooling technologies allow efficiencies of up to 60%.
 

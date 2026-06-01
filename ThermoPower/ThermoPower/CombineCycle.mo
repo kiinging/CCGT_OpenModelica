@@ -864,7 +864,7 @@ This is a simple model of a steam plant.
       replaceable package Water = ThermoPower.Water.StandardWater constrainedby Modelica.Media.Interfaces.PartialPureSubstance "Fluid model";
       // GT Components
       Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_GT(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
-        Placement(transformation(origin = {-220, -50}, extent = {{-10, -10}, {10, 10}})));
+        Placement(transformation(origin = {-210, -50}, extent = {{-10, -10}, {10, 10}})));
       Gas.Compressor compressor(redeclare package Medium = Media.Air, tablePhic = tablePhicC, tableEta = tableEtaC, pstart_in = 1.01325e5, pstart_out = 2.45e6, Tstart_in = 301.15, tablePR = tablePR, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 600.4, explicitIsentropicEnthalpy = true, Tdes_in = 301.15, Ndesign = 157.08) annotation(
         Placement(transformation(origin = {-300, 10}, extent = {{-158, -90}, {-98, -30}})));
       Gas.Turbine turbine(redeclare package Medium = FlueGas, pstart_in = 2.38e6, pstart_out = 1.05e5, tablePhic = tablePhicT, tableEta = tableEtaT, Table = ThermoPower.Choices.TurboMachinery.TableTypes.matrix, Tstart_out = 900, Tdes_in = 1600, Tstart_in = 1600, Ndesign = 157.08) annotation(
@@ -876,17 +876,17 @@ This is a simple model of a steam plant.
       Gas.SourceMassFlow SourceW1(redeclare package Medium = Media.NaturalGas, w0 = 6.06, p0 = 2500000, T = 300, use_in_w0 = true) annotation(
         Placement(transformation(origin = {-442, 18}, extent = {{-100, 70}, {-80, 90}}, rotation = -90)));
       Gas.PressDrop PressDrop1(redeclare package Medium = FlueGas, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, wnom = 306, rhonom = 6, dpnom = 26000, pstart = 2410000, Tstart = 1600) annotation(
-        Placement(transformation(origin = {-326, 18}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
+        Placement(transformation(origin = {-330, 14}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
       Gas.PressDrop PressDrop2(pstart = 2.45e6, FFtype = ThermoPower.Choices.PressDrop.FFtypes.OpPoint, A = 1, redeclare package Medium = Media.Air, dpnom = 0.19e5, wnom = 300, rhonom = 14, Tstart = 600) annotation(
-        Placement(transformation(origin = {-404, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+        Placement(transformation(origin = {-404, 12}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
       Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_GT annotation(
-        Placement(transformation(origin = {-322, 10}, extent = {{60, -70}, {80, -50}})));
+        Placement(transformation(origin = {-320, -110}, extent = {{60, 70}, {80, 50}}, rotation = -0)));
       Modelica.Blocks.Continuous.FirstOrder fuelFlowActuator(k = 1, T = 4, y_start = 500, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
         Placement(transformation(origin = {-283.25, 55.5}, extent = {{-120.75, 80.5}, {-106.75, 94.5}})));
       Modelica.Blocks.Continuous.FirstOrder powerSensor1_GT(k = 1, T = 1, y_start = 170e6, initType = Modelica.Blocks.Types.Init.SteadyState) annotation(
         Placement(transformation(origin = {-396, 106}, extent = {{146, -118}, {162, -102}})));
       Modelica.Blocks.Interfaces.RealOutput generatedPower_GT annotation(
-        Placement(transformation(origin = {-404, -6}, extent = {{196, -10}, {216, 10}}), iconTransformation(extent = {{196, -10}, {216, 10}})));
+        Placement(transformation(origin = {-404, -4}, extent = {{196, -10}, {216, 10}}), iconTransformation(extent = {{196, -10}, {216, 10}})));
       
       ThermoPower.PowerPlants.HRSG.Components.StateReader_gas stateInletCC(redeclare package Medium = Media.Air) annotation(
         Placement(transformation(origin = {-316, 19}, extent = {{-90, 27}, {-72, 45}})));
@@ -910,7 +910,7 @@ This is a simple model of a steam plant.
       ThermoPower.Water.SteamTurbineStodola steamTurbine(wstart = 30, wnom = 30, Kt = 0.0057, redeclare package Medium = Water, PRstart = 30, pnom = 3000000) annotation(
         Placement(transformation(origin = {-48, -4}, extent = {{50, 30}, {100, 80}})));
       Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor_ST annotation(
-        Placement(transformation(origin = {-34, -2}, extent = {{138, 68}, {166, 40}})));
+        Placement(transformation(origin = {-20, -4}, extent = {{138, 68}, {166, 40}})));
       Models.HE economizer(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, N_F = 6, exchSurface_G = 40095.9, exchSurface_F = 3439.389, extSurfaceTub = 3888.449, gasVol = 10, fluidVol = 28.977, metalVol = 8.061, rhomcm = 7900*578.05, lambda = 20, gasNomFlowRate = 500, fluidNomFlowRate = 30, gamma_G = 30, gamma_F = 3000, rhonom_G = 1, Kfnom_F = 150, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, FFtype_F = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, N_G = 6, gasNomPressure = 101325, fluidNomPressure = 3000000, Tstart_G = 473.15, Tstart_M = 423.15, dpnom_G = 1000, dpnom_F = 20000) annotation(
         Placement(transformation(extent = {{-120, -80}, {-80, -120}})));
       Models.Evaporator evaporator(redeclare package FluidMedium = Water, redeclare package FlueGasMedium = FlueGas, gasVol = 10, fluidVol = 12.400, metalVol = 4.801, gasNomFlowRate = 500, fluidNomFlowRate = 30, N = 4, rhom = 7900, cm = 578.05, gamma = 85, exchSurface = 24402, gasNomPressure = 101325, fluidNomPressure = 3000000, Tstart = 623.15, FFtype_G = ThermoPower.Choices.Flow1D.FFtypes.OpPoint, dpnom_G = 1000, rhonom_G = 1) annotation(
@@ -934,7 +934,7 @@ This is a simple model of a steam plant.
       ThermoPower.Gas.SinkPressure sinkP_gas(T = 400, redeclare package Medium = FlueGas) annotation(
         Placement(transformation(extent = {{-40, -110}, {-20, -90}})));
       Modelica.Mechanics.Rotational.Sources.ConstantSpeed constantSpeed_ST(w_fixed = 157, phi(start = 0, fixed = true)) annotation(
-        Placement(transformation(origin = {-20, -2}, extent = {{200, 44}, {180, 64}})));
+        Placement(transformation(origin = {-14, -4}, extent = {{200, 44}, {180, 64}})));
       inner System system(allowFlowReversal = false, initOpt = ThermoPower.Choices.Init.Options.steadyState) annotation(
         Placement(transformation(extent = {{240, 160}, {260, 180}})));
       Modelica.Blocks.Sources.Ramp powerSetPoint(
@@ -960,14 +960,17 @@ This is a simple model of a steam plant.
         Line(points = {{-356, 98}, {-356, 85}, {-358, 85}, {-358, 74}}, color = {159, 159, 223}));
       connect(SourceP1.flange, compressor.inlet) annotation(
         Line(points = {{-476, 0}, {-452, 0}, {-452, -26}}, color = {159, 159, 223}));
+// Bridge: GT exhaust to ST HRSG
+      connect(turbine.outlet, stateTurbineExhaust.inlet) annotation(
+        Line(points = {{-282, -26}, {-282, 61}, {-168, 61}, {-168, 60}}, color = {159, 159, 223}));
       connect(PressDrop1.outlet, turbine.inlet) annotation(
-        Line(points = {{-326, 8}, {-326, -9}, {-330, -9}, {-330, -26}}, color = {159, 159, 223}));
+        Line(points = {{-330, 4}, {-330, -26}}, color = {159, 159, 223}));
       connect(compressor.outlet, PressDrop2.inlet) annotation(
-        Line(points = {{-404, -26}, {-404, 10}}, color = {159, 159, 223}));
+        Line(points = {{-404, -26}, {-404, 2}}, color = {159, 159, 223}));
       connect(compressor.shaft_b, turbine.shaft_a) annotation(
         Line(points = {{-410, -50}, {-324, -50}}));
       connect(powerSensor_GT.flange_a, turbine.shaft_b) annotation(
-        Line(points = {{-262, -50}, {-288, -50}}));
+        Line(points = {{-260, -50}, {-288, -50}}));
       connect(fuelFlowActuator.u, powerController.CS) annotation(
         Line(points = {{-405, 143}, {-448, 143}, {-448, 144}}, color = {0, 0, 127}));
       connect(powerController.SP, powerSetPoint.y) annotation(
@@ -976,27 +979,21 @@ This is a simple model of a steam plant.
         Line(points = {{-389, 143}, {-360.2, 143}, {-360.2, 114}, {-357, 114}}, color = {0, 0, 127}));
       connect(SourceW1.flange, CombustionChamber1.inf) annotation(
         Line(points = {{-362, 98}, {-362, 74}}, color = {159, 159, 223}));
-      connect(powerSensor_GT.power, powerSensor1_GT.u) annotation(
-        Line(points = {{-260, -61}, {-260, -32.5}, {-252, -32.5}, {-252, -4}}, color = {0, 0, 127}));
       connect(powerSensor1_GT.y, generatedPower_GT) annotation(
-        Line(points = {{-233, -4}, {-215.7, -4}, {-215.7, -6}, {-198.2, -6}}, color = {0, 0, 127}));
+        Line(points = {{-233, -4}, {-198, -4}}, color = {0, 0, 127}));
       connect(CombustionChamber1.ina, stateInletCC.outlet) annotation(
         Line(points = {{-382, 54}, {-387, 54}, {-387, 55}, {-392, 55}}, color = {159, 159, 223}));
-      connect(stateInletCC.inlet, PressDrop2.outlet) annotation(
-        Line(points = {{-402, 55}, {-402, 42}, {-404, 42}, {-404, 30}}, color = {159, 159, 223}));
       connect(stateOutletCC.inlet, CombustionChamber1.out) annotation(
         Line(points = {{-330, 54}, {-342, 54}}, color = {159, 159, 223}));
-      connect(stateOutletCC.outlet, PressDrop1.inlet) annotation(
-        Line(points = {{-318, 54}, {-308, 54}, {-308, 32}, {-306, 32}}, color = {159, 159, 223}));
-      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(Line(points = {{-210, -50}, {-240, -50}}));
-// Bridge: GT exhaust to ST HRSG
-      connect(turbine.outlet, stateTurbineExhaust.inlet) annotation(
-        Line(points = {{-282, -26}, {-282, 61}, {-168, 61}, {-168, 60}}, color = {159, 159, 223}));
-      connect(stateTurbineExhaust.outlet, superheater.gasIn) annotation(
-        Line(points = {{-156, 60}, {-121, 60}}, color = {159, 159, 223}));
+      connect(constantSpeed_GT.flange, powerSensor_GT.flange_b) annotation(Line(points = {{-200, -50}, {-240, -50}}));
 // ST Connections
       connect(generatedPower_ST, powerSensor_ST_ctrl.y) annotation(
         Line(points = {{252, 110}, {175, 110}}, color = {0, 0, 127}));
+      connect(stateTurbineExhaust.outlet, superheater.gasIn) annotation(
+        Line(points = {{-156, 60}, {-121, 60}}, color = {159, 159, 223}));
+// Wire generatedPower_GT and generatedPower_ST to the adder inputs
+      connect(generatedPower_GT, powerAdder.u1) annotation(
+        Line(points = {{-198, -4}, {-198, 157.5}, {-218, 157.5}, {-218, 156}}, color = {0, 0, 127}));
       connect(nPumpActuator.u, voidFractionController.CS) annotation(
         Line(points = {{-262, -160}, {-292, -160}}, color = {0, 0, 127}));
       connect(voidFractionController.SP, voidFractionSetPoint.y) annotation(
@@ -1006,7 +1003,7 @@ This is a simple model of a steam plant.
       connect(voidFraction_ST, voidFractionSensor_ST.y) annotation(
         Line(points = {{295, -35}, {280.5, -35}, {280.5, -32}, {175, -32}}, color = {0, 0, 127}));
       connect(powerSensor_ST.flange_a, steamTurbine.shaft_b) annotation(
-        Line(points = {{104, 52}, {91, 52}, {91, 51}, {43, 51}}));
+        Line(points = {{118, 50}, {91, 50}, {91, 51}, {43, 51}}));
       connect(condenser.steamIn, steamTurbine.outlet) annotation(
         Line(points = {{88, -60}, {88, 71}, {47, 71}}));
       connect(prescribedSpeedPump.outlet, stateWaterEconomizer_in.inlet) annotation(
@@ -1038,21 +1035,24 @@ This is a simple model of a steam plant.
       connect(stateWaterSuperheater_out.outlet, steamTurbine.inlet) annotation(
         Line(points = {{-100, 106}, {-100, 120}, {7, 120}, {7, 71}}));
       connect(powerSensor_ST_ctrl.u, powerSensor_ST.power) annotation(
-        Line(points = {{152, 110}, {152, 108.5}, {108, 108.5}, {108, 109}, {107.5, 109}, {107.5, 67}, {107, 67}}, color = {0, 0, 127}));
+        Line(points = {{152, 110}, {152, 108.5}, {108, 108.5}, {108, 109}, {107.5, 109}, {107.5, 65}, {121, 65}}, color = {0, 0, 127}));
       connect(voidFractionSensor_ST.u, evaporator.voidFraction) annotation(
         Line(points = {{152, -32}, {-78.8, -32}}, color = {0, 0, 127}));
       connect(nPumpActuator.y, prescribedSpeedPump.nPump) annotation(
         Line(points = {{-239, -160}, {-239, -160}, {-239, -158}, {-138, -158}, {-138, -194}, {160, -194}, {160, -148}, {34.4, -148}}, color = {0, 0, 127}));
       connect(constantSpeed_ST.flange, powerSensor_ST.flange_b) annotation(
-        Line(points = {{160, 52}, {132, 52}}));
-// Wire generatedPower_GT and generatedPower_ST to the adder inputs
-      connect(generatedPower_GT, powerAdder.u1) annotation(
-        Line(points = {{-198, -6}, {-198, 157.5}, {-218, 157.5}, {-218, 156}}, color = {0, 0, 127}));
-      connect(generatedPower_ST, powerAdder.u2) annotation(
-        Line(points = {{252, 110}, {310, 110}, {310, 168}, {-218, 168}}, color = {0, 0, 127}));
+        Line(points = {{166, 50}, {146, 50}}));
 // Connect Adder Output to the Process Variable (PV) of the Power PID Controller
       connect(powerController.PV, powerAdder.y) annotation(
         Line(points = {{-468, 148}, {-477, 148}, {-477, 162}, {-241, 162}}, color = {0, 0, 127}));
+      connect(generatedPower_ST, powerAdder.u2) annotation(
+        Line(points = {{252, 110}, {310, 110}, {310, 168}, {-218, 168}}, color = {0, 0, 127}));
+  connect(stateOutletCC.outlet, PressDrop1.inlet) annotation(
+        Line(points = {{-318, 54}, {-304, 54}, {-304, 36}, {-330, 36}, {-330, 24}}, color = {159, 159, 223}));
+  connect(stateInletCC.inlet, PressDrop2.outlet) annotation(
+        Line(points = {{-402, 56}, {-426, 56}, {-426, 38}, {-404, 38}, {-404, 22}}, color = {159, 159, 223}));
+  connect(powerSensor_GT.power, powerSensor1_GT.u) annotation(
+        Line(points = {{-258, -38}, {-258, -4}, {-252, -4}}, color = {0, 0, 127}));
       annotation(
         experiment(StopTime = 1000, Tolerance = 1e-06),
         Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-540, 180}, {320, -240}}, initialScale = 0.1)),
