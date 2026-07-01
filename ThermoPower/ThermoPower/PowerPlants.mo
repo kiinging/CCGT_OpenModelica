@@ -2806,15 +2806,15 @@ package PowerPlants "Models of thermoelectrical power plants components"
           Placement(transformation(origin = {-30, -40}, extent = {{10, 10}, {-10, -10}}, rotation = 180)));
       equation
         connect(SensorsBus.y_drumHP, Level_HP.PV) annotation(
-          Line(points = {{-100, 0}, {-60, 0}, {-60, 30}, {0, 30}, {0, 46}, {20, 46}}, color = {255, 170, 213}));
+          Line(points = {{-100, 0}, {-60, 0}, {-60, 30}, {0, 30}, {0, 46}, {20, 46}}, color = {0, 66, 198}, thickness = 0.5));
         connect(SensorsBus.y_drumIP, Level_IP.PV) annotation(
-          Line(points = {{-100, 0}, {-60, 0}, {-60, -20}, {0, -20}, {0, -4}, {20, -4}}, color = {255, 170, 213}));
+          Line(points = {{-100, 0}, {-60, 0}, {-60, -20}, {0, -20}, {0, -4}, {20, -4}}, color = {0, 62, 186}, thickness = 0.5));
         connect(SensorsBus.y_drumLP, Level_LP.PV) annotation(
-          Line(points = {{-100, 0}, {-60, 0}, {-60, -66}, {0, -66}, {0, -48}, {20, -48}}, color = {255, 170, 213}));
+          Line(points = {{-100, 0}, {-60, 0}, {-60, -66}, {0, -66}, {0, -48}, {20, -48}}, color = {0, 59, 176}, thickness = 0.5));
         connect(ActuatorsBus.flowRate_feedIP, Level_IP.CS) annotation(
           Line(points = {{100, 0}, {40, 0}}, color = {213, 255, 170}));
         connect(ActuatorsBus.flowRate_feedHP, Level_HP.CS) annotation(
-          Line(points = {{100, 0}, {60, 0}, {60, 50}, {40, 50}}, color = {213, 255, 170}));
+          Line(points = {{100, 0}, {60, 0}, {60, 50}, {40, 50}}, color = {0, 71, 212}, thickness = 0.5));
         connect(levelHP_SP.y, Level_HP.SP) annotation(
           Line(points = {{-19, 54}, {20, 54}}, color = {0, 0, 127}));
         connect(levelIP_SP.y, Level_IP.SP) annotation(
@@ -2822,7 +2822,7 @@ package PowerPlants "Models of thermoelectrical power plants components"
         connect(levelLP_SP.y, Level_LP.SP) annotation(
           Line(points = {{-19, -40}, {20, -40}}, color = {0, 0, 127}));
         connect(ActuatorsBus.nPump_feedLP, Level_LP.CS) annotation(
-          Line(points = {{100, 0}, {60, 0}, {60, -44}, {40, -44}}, color = {213, 255, 170}));
+          Line(points = {{100, 0}, {60, 0}, {60, -44}, {40, -44}}, color = {0, 70, 209}, thickness = 0.5));
         annotation(
           Diagram(graphics));
       end levelsControl;
@@ -4313,58 +4313,8 @@ package PowerPlants "Models of thermoelectrical power plants components"
           Placement(transformation(extent = {{64, -12}, {80, 4}}, rotation = 0)));
         inner System system(allowFlowReversal = false) annotation(
           Placement(transformation(extent = {{80, 80}, {100, 100}})));
-        
-        
-       
-       
-       
-       
-       
-       Examples.HEG_3LRh HeatExchangersGroup(
-          gasNomFlowRate = 585.5, fluidHPNomFlowRate_Sh = 70.59, fluidHPNomFlowRate_Ev = 175.5, fluidHPNomFlowRate_Ec = 70.10, fluidIPNomFlowRate_Rh = 81.10, fluidIPNomFlowRate_Sh = 13.5, fluidIPNomFlowRate_Ev = 67.5, fluidIPNomFlowRate_Ec = 21.8, fluidLPNomFlowRate_Sh = 6.91, fluidLPNomFlowRate_Ev = 41.49, fluidLPNomFlowRate_Ec = 122.4, 
-          Sh2_HP_N_G = 3, Sh2_HP_N_F = 5, Sh2_HP_exchSurface_G = 3636, Sh2_HP_exchSurface_F = 421.844, Sh2_HP_extSurfaceTub = 540.913, Sh2_HP_gasVol = 10, Sh2_HP_fluidVol = 2.615, Sh2_HP_metalVol = 1.685, 
-          Sh1_HP_N_G = 3, Sh1_HP_N_F = 7, Sh1_HP_exchSurface_G = 8137.2, Sh1_HP_exchSurface_F = 612.387, Sh1_HP_extSurfaceTub = 721.256, Sh1_HP_gasVol = 10, Sh1_HP_fluidVol = 4.134, Sh1_HP_metalVol = 1.600, 
-          Ev_HP_N_G = 4, Ev_HP_N_F = 4, Ev_HP_exchSurface_G = 30501.9, Ev_HP_exchSurface_F = 2296.328, Ev_HP_extSurfaceTub = 2704.564, Ev_HP_gasVol = 10, Ev_HP_fluidVol = 15.500, Ev_HP_metalVol = 6.001, 
-          Ec2_HP_N_G = 3, Ec2_HP_N_F = 6, Ec2_HP_exchSurface_G = 20335, Ec2_HP_exchSurface_F = 1451.506, Ec2_HP_extSurfaceTub = 1803.043, Ec2_HP_gasVol = 10, Ec2_HP_fluidVol = 9.290, Ec2_HP_metalVol = 5.045, 
-          Ec1_HP_N_G = 3, Ec1_HP_N_F = 5, Ec1_HP_exchSurface_G = 12201.2, Ec1_HP_exchSurface_F = 870.904, Ec1_HP_extSurfaceTub = 1081.826, Ec1_HP_gasVol = 10, Ec1_HP_fluidVol = 5.574, Ec1_HP_metalVol = 3.027, 
-          Rh2_IP_N_F = 7, Rh2_IP_exchSurface_G = 4630.2, Rh2_IP_exchSurface_F = 873.079, Rh2_IP_extSurfaceTub = 1009.143, Rh2_IP_fluidVol = 8.403, Rh2_IP_metalVol = 2.823, 
-          Rh1_IP_N_F = 5, Rh1_IP_exchSurface_G = 4630, Rh1_IP_exchSurface_F = 900.387, Rh1_IP_extSurfaceTub = 1009.250, Rh1_IP_fluidVol = 8.936, Rh1_IP_metalVol = 2.292, 
-          Sh_IP_N_G = 3, Sh_IP_N_F = 7, Sh_IP_exchSurface_G = 2314.8, Sh_IP_exchSurface_F = 450.218, Sh_IP_extSurfaceTub = 504.652, Sh_IP_gasVol = 10, Sh_IP_fluidVol = 4.468, Sh_IP_metalVol = 1.146, 
-          Ev_IP_N_G = 4, Ev_IP_N_F = 4, Ev_IP_exchSurface_G = 24402, Ev_IP_exchSurface_F = 1837.063, Ev_IP_extSurfaceTub = 2163.652, Ev_IP_gasVol = 10, Ev_IP_fluidVol = 12.400, Ev_IP_metalVol = 4.801, 
-          Ec_IP_N_G = 3, Ec_IP_N_F = 5, Ec_IP_exchSurface_G = 4067.2, Ec_IP_exchSurface_F = 306.177, Ec_IP_extSurfaceTub = 360.609, Ec_IP_gasVol = 10, Ec_IP_fluidVol = 2.067, Ec_IP_metalVol = 0.800, 
-          Sh_LP_N_G = 3, Sh_LP_N_F = 7, Sh_LP_exchSurface_G = 1708.2, Sh_LP_exchSurface_F = 225.073, Sh_LP_extSurfaceTub = 252.286, Sh_LP_gasVol = 10, Sh_LP_fluidVol = 2.234, Sh_LP_metalVol = 0.573, 
-          Ev_LP_N_G = 4, Ev_LP_N_F = 4, Ev_LP_exchSurface_G = 24402, Ev_LP_exchSurface_F = 2292.926, Ev_LP_extSurfaceTub = 2592.300, Ev_LP_gasVol = 10, Ev_LP_fluidVol = 19.318, Ev_LP_metalVol = 5.374, 
-          Ec_LP_N_G = 3, Ec_LP_N_F = 6, Ec_LP_exchSurface_G = 40095.9, Ec_LP_exchSurface_F = 3439.389, Ec_LP_extSurfaceTub = 3888.449, Ec_LP_gasVol = 10, Ec_LP_fluidVol = 28.977, Ec_LP_metalVol = 8.061, 
-          rhomcm = 7900*578.05, lambda = 20, 
-          
-          Ec_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 46.8), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), 
-          Ev_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 127), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 20000)), 
-          Ec1HP_EcIP(redeclare model HeatTransfer_GA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 42), redeclare model HeatTransfer_GB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 45), redeclare model HeatTransfer_FA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000), redeclare model HeatTransfer_FB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), 
-          Sh_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 16.6), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), 
-          Ev_IP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 58.5), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 20000)), 
-          Ec2_HP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 56), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), 
-          Sh_IP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 33), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), 
-          Ev_HP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 46.5), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 20000)), 
-          Sh1HP_Rh1IP(redeclare model HeatTransfer_GA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 70), redeclare model HeatTransfer_GB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 80), redeclare model HeatTransfer_FA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000), redeclare model HeatTransfer_FB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), 
-          Sh2HP_Rh2IP(redeclare model HeatTransfer_GA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 83.97), redeclare model HeatTransfer_GB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 80), redeclare model HeatTransfer_FA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000), redeclare model HeatTransfer_FB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)),
-          
-          redeclare package FlueGasMedium = FlueGasMedium, redeclare package FluidMedium = FluidMedium, SSInit = true, gasNomPressure = 100000, fluidHPNomPressure_Sh = 13430000, fluidHPNomPressure_Ev = 13710000, fluidHPNomPressure_Ec = 13890000, fluidIPNomPressure_Rh = 2840000, fluidIPNomPressure_Sh = 2950000, fluidIPNomPressure_Ev = 3716000, fluidIPNomPressure_Ec = 4860000, fluidLPNomPressure_Sh = 660000, fluidLPNomPressure_Ev = 1534000, fluidLPNomPressure_Ec = 1980000, Sh2_HP_Tstartbar = 873.15, Sh1_HP_Tstartbar = 823.15, Ev_HP_Tstartbar = 723.15, Ec2_HP_Tstartbar = 573.15, Ec1_HP_Tstartbar = 523.15, Sh_IP_Tstartbar = 623.15, Ev_IP_Tstartbar = 553.15, Sh_LP_Tstartbar = 523.15, Ev_LP_Tstartbar = 473.15, Ec_LP_Tstartbar = 423.15) annotation(
+        Examples.HEG_3LRh HeatExchangersGroup(gasNomFlowRate = 585.5, fluidHPNomFlowRate_Sh = 70.59, fluidHPNomFlowRate_Ev = 175.5, fluidHPNomFlowRate_Ec = 70.10, fluidIPNomFlowRate_Rh = 81.10, fluidIPNomFlowRate_Sh = 13.5, fluidIPNomFlowRate_Ev = 67.5, fluidIPNomFlowRate_Ec = 21.8, fluidLPNomFlowRate_Sh = 6.91, fluidLPNomFlowRate_Ev = 41.49, fluidLPNomFlowRate_Ec = 122.4, Sh2_HP_N_G = 3, Sh2_HP_N_F = 5, Sh2_HP_exchSurface_G = 3636, Sh2_HP_exchSurface_F = 421.844, Sh2_HP_extSurfaceTub = 540.913, Sh2_HP_gasVol = 10, Sh2_HP_fluidVol = 2.615, Sh2_HP_metalVol = 1.685, Sh1_HP_N_G = 3, Sh1_HP_N_F = 7, Sh1_HP_exchSurface_G = 8137.2, Sh1_HP_exchSurface_F = 612.387, Sh1_HP_extSurfaceTub = 721.256, Sh1_HP_gasVol = 10, Sh1_HP_fluidVol = 4.134, Sh1_HP_metalVol = 1.600, Ev_HP_N_G = 4, Ev_HP_N_F = 4, Ev_HP_exchSurface_G = 30501.9, Ev_HP_exchSurface_F = 2296.328, Ev_HP_extSurfaceTub = 2704.564, Ev_HP_gasVol = 10, Ev_HP_fluidVol = 15.500, Ev_HP_metalVol = 6.001, Ec2_HP_N_G = 3, Ec2_HP_N_F = 6, Ec2_HP_exchSurface_G = 20335, Ec2_HP_exchSurface_F = 1451.506, Ec2_HP_extSurfaceTub = 1803.043, Ec2_HP_gasVol = 10, Ec2_HP_fluidVol = 9.290, Ec2_HP_metalVol = 5.045, Ec1_HP_N_G = 3, Ec1_HP_N_F = 5, Ec1_HP_exchSurface_G = 12201.2, Ec1_HP_exchSurface_F = 870.904, Ec1_HP_extSurfaceTub = 1081.826, Ec1_HP_gasVol = 10, Ec1_HP_fluidVol = 5.574, Ec1_HP_metalVol = 3.027, Rh2_IP_N_F = 7, Rh2_IP_exchSurface_G = 4630.2, Rh2_IP_exchSurface_F = 873.079, Rh2_IP_extSurfaceTub = 1009.143, Rh2_IP_fluidVol = 8.403, Rh2_IP_metalVol = 2.823, Rh1_IP_N_F = 5, Rh1_IP_exchSurface_G = 4630, Rh1_IP_exchSurface_F = 900.387, Rh1_IP_extSurfaceTub = 1009.250, Rh1_IP_fluidVol = 8.936, Rh1_IP_metalVol = 2.292, Sh_IP_N_G = 3, Sh_IP_N_F = 7, Sh_IP_exchSurface_G = 2314.8, Sh_IP_exchSurface_F = 450.218, Sh_IP_extSurfaceTub = 504.652, Sh_IP_gasVol = 10, Sh_IP_fluidVol = 4.468, Sh_IP_metalVol = 1.146, Ev_IP_N_G = 4, Ev_IP_N_F = 4, Ev_IP_exchSurface_G = 24402, Ev_IP_exchSurface_F = 1837.063, Ev_IP_extSurfaceTub = 2163.652, Ev_IP_gasVol = 10, Ev_IP_fluidVol = 12.400, Ev_IP_metalVol = 4.801, Ec_IP_N_G = 3, Ec_IP_N_F = 5, Ec_IP_exchSurface_G = 4067.2, Ec_IP_exchSurface_F = 306.177, Ec_IP_extSurfaceTub = 360.609, Ec_IP_gasVol = 10, Ec_IP_fluidVol = 2.067, Ec_IP_metalVol = 0.800, Sh_LP_N_G = 3, Sh_LP_N_F = 7, Sh_LP_exchSurface_G = 1708.2, Sh_LP_exchSurface_F = 225.073, Sh_LP_extSurfaceTub = 252.286, Sh_LP_gasVol = 10, Sh_LP_fluidVol = 2.234, Sh_LP_metalVol = 0.573, Ev_LP_N_G = 4, Ev_LP_N_F = 4, Ev_LP_exchSurface_G = 24402, Ev_LP_exchSurface_F = 2292.926, Ev_LP_extSurfaceTub = 2592.300, Ev_LP_gasVol = 10, Ev_LP_fluidVol = 19.318, Ev_LP_metalVol = 5.374, Ec_LP_N_G = 3, Ec_LP_N_F = 6, Ec_LP_exchSurface_G = 40095.9, Ec_LP_exchSurface_F = 3439.389, Ec_LP_extSurfaceTub = 3888.449, Ec_LP_gasVol = 10, Ec_LP_fluidVol = 28.977, Ec_LP_metalVol = 8.061, rhomcm = 7900*578.05, lambda = 20, Ec_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 46.8), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), Ev_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 127), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 20000)), Ec1HP_EcIP(redeclare model HeatTransfer_GA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 42), redeclare model HeatTransfer_GB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 45), redeclare model HeatTransfer_FA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000), redeclare model HeatTransfer_FB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), Sh_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 16.6), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), Ev_IP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 58.5), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 20000)), Ec2_HP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 56), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), Sh_IP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 33), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), Ev_HP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 46.5), redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 20000)), Sh1HP_Rh1IP(redeclare model HeatTransfer_GA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 70), redeclare model HeatTransfer_GB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 80), redeclare model HeatTransfer_FA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000), redeclare model HeatTransfer_FB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), Sh2HP_Rh2IP(redeclare model HeatTransfer_GA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 83.97), redeclare model HeatTransfer_GB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 80), redeclare model HeatTransfer_FA = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000), redeclare model HeatTransfer_FB = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 4000)), redeclare package FlueGasMedium = FlueGasMedium, redeclare package FluidMedium = FluidMedium, SSInit = true, gasNomPressure = 100000, fluidHPNomPressure_Sh = 13430000, fluidHPNomPressure_Ev = 13710000, fluidHPNomPressure_Ec = 13890000, fluidIPNomPressure_Rh = 2840000, fluidIPNomPressure_Sh = 2950000, fluidIPNomPressure_Ev = 3716000, fluidIPNomPressure_Ec = 4860000, fluidLPNomPressure_Sh = 660000, fluidLPNomPressure_Ev = 1534000, fluidLPNomPressure_Ec = 1980000, Sh2_HP_Tstartbar = 873.15, Sh1_HP_Tstartbar = 823.15, Ev_HP_Tstartbar = 723.15, Ec2_HP_Tstartbar = 573.15, Ec1_HP_Tstartbar = 523.15, Sh_IP_Tstartbar = 623.15, Ev_IP_Tstartbar = 553.15, Sh_LP_Tstartbar = 523.15, Ev_LP_Tstartbar = 473.15, Ec_LP_Tstartbar = 423.15) annotation(
           Placement(transformation(extent = {{-64, -30}, {58, 22}}, rotation = 0)));
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-        
-          
-          
-          
-          
       equation
         connect(OutHP.flange, valveLinHP.outlet) annotation(
           Line(points = {{-88, -84}, {-80, -84}}, thickness = 0.5));
@@ -8323,7 +8273,7 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
       inner System system(allowFlowReversal = false) annotation(
         Placement(transformation(extent = {{180, 180}, {200, 200}})));
       HRSG.Examples.HRSG_3LRh hRSG(drums(fluidHPNomPressure = 12211600, fluidIPNomPressure = 2636940, fluidLPNomPressure = 604700), HeatExchangersGroup(fluidHPNomFlowRate_Sh = 62.8, fluidHPNomFlowRate_Ec = 64.5, fluidIPNomFlowRate_Rh = 77.36, fluidIPNomFlowRate_Sh = 14.5, fluidIPNomFlowRate_Ec = 13.5, fluidLPNomFlowRate_Sh = 10.95, fluidLPNomFlowRate_Ec = 89.8, Sh_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficientTwoGrids(gamma = 30)), Ec_LP(redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 3000), redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficientTwoGrids(gamma = 35)), Ev_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 60)), Sh1HP_Rh1IP(FFtype_F_B = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, Kfnom_F_B = 150, dpnom_F_B = 0.3e5), Sh2HP_Rh2IP(FFtype_F_B = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, Kfnom_F_B = 150, dpnom_F_B = 0.3e5), fluidHPNomPressure_Sh = 12211600, fluidHPNomPressure_Ev = 12211600, fluidHPNomPressure_Ec = 12211600, fluidIPNomPressure_Rh = 2636940, fluidIPNomPressure_Sh = 2636940, fluidIPNomPressure_Ev = 2636940, fluidIPNomPressure_Ec = 2636940, fluidLPNomPressure_Sh = 604740, fluidLPNomPressure_Ev = 604740, fluidLPNomPressure_Ec = 604740, Sh2_HP_Tstartbar = 800, Sh1_HP_Tstartbar = 800, Ev_HP_Tstartbar = 700, Ec2_HP_Tstartbar = 600, Sh_IP_Tstartbar = 600, Ev_IP_Tstartbar = 550, Ec_IP_Tstartbar = 500, Sh_LP_Tstartbar = 550, Ev_LP_Tstartbar = 500, Ec_LP_Tstartbar = 450), SSInit = true) annotation(
-        Placement(transformation(extent = {{-20, -20}, {60, 60}}, rotation = 0)));
+        Placement(transformation(extent = {{-20, -20}, {60, 60}})));
       Gas.SinkPressure sinkGas(redeclare package Medium = FlueGasMedium, T = 362.309) annotation(
         Placement(transformation(extent = {{96, 2}, {116, 22}}, rotation = 0)));
       ElectricGeneratorGroup.Examples.GeneratorGroup singleShaft(eta = 0.9, J_shaft = 15000, d_shaft = 25, Pmax = 150e6, SSInit = true, delta_start = 0.7) annotation(
@@ -8347,9 +8297,9 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
       connect(gasTurbine.GTLoad, ramp.y) annotation(
         Line(points = {{-140, -20}, {-159, -20}}, color = {0, 0, 127}));
       connect(hRSG.GasIn, gasTurbine.flueGasOut) annotation(
-        Line(points = {{-20, 12}, {-60, 12}}, color = {159, 159, 223}, smooth = Smooth.None, thickness = 0.5));
+        Line(points = {{-20, 12}, {-60, 12}}, color = {159, 159, 223}, thickness = 0.5));
       connect(hRSG.GasOut, sinkGas.flange) annotation(
-        Line(points = {{60, 12}, {96, 12}}, color = {159, 159, 223}, thickness = 0.5, smooth = Smooth.None));
+        Line(points = {{60, 12}, {96, 12}}, color = {159, 159, 223}, thickness = 0.5));
       connect(singleShaft.shaft, sTG_3LRh.Shaft_b) annotation(
         Line(points = {{100, -120}, {100, -120}, {60, -120}}, thickness = 0.5));
       connect(sTG_3LRh.WaterOut, hRSG.WaterIn) annotation(
@@ -8363,15 +8313,15 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
       connect(sTG_3LRh.From_SH_HP, hRSG.Sh_HP_Out) annotation(
         Line(points = {{-12, -80}, {-12, -20}}, color = {0, 0, 255}, thickness = 0.5));
       connect(hRSG.SensorsBus, levelsControl.SensorsBus) annotation(
-        Line(points = {{60, 52}, {80, 52}, {80, 90}, {100, 90}}, color = {255, 170, 213}, smooth = Smooth.None));
+        Line(points = {{60, 52}, {80, 52}, {80, 90}, {100, 90}}, color = {0, 74, 222}, thickness = 0.5));
       connect(sTG_3LRh.SensorsBus, hRSG.SensorsBus) annotation(
         Line(points = {{60, -136}, {80, -136}, {80, 52}, {60, 52}}, color = {255, 170, 213}));
       connect(singleShaft.SensorsBus, hRSG.SensorsBus) annotation(
-        Line(points = {{180, -136}, {200, -136}, {200, -40}, {80, -40}, {80, 52}, {60, 52}}, color = {255, 170, 213}, smooth = Smooth.None));
+        Line(points = {{180, -136}, {200, -136}, {200, -40}, {80, -40}, {80, 52}, {60, 52}}, color = {255, 170, 213}));
       connect(hRSG.ActuatorsBus, levelsControl.ActuatorsBus) annotation(
-        Line(points = {{60, 40}, {180, 40}, {180, 90}, {160, 90}}, color = {213, 255, 170}, smooth = Smooth.None));
+        Line(points = {{60, 40}, {180, 40}, {180, 90}, {160, 90}}, color = {213, 255, 170}));
       connect(levelsControl.ActuatorsBus, actuators) annotation(
-        Line(points = {{160, 90}, {180, 90}, {180, 140}, {-40, 140}, {-40, 110}, {-80, 110}}, color = {213, 255, 170}, smooth = Smooth.None));
+        Line(points = {{160, 90}, {180, 90}, {180, 140}, {-40, 140}, {-40, 110}, {-80, 110}}, color = {0, 74, 223}, thickness = 0.5));
       connect(sTG_3LRh.ActuatorsBus, singleShaft.ActuatorsBus) annotation(
         Line(points = {{60, -148}, {72, -148}, {72, -178}, {190, -178}, {190, -148}, {180, -148}}, color = {213, 255, 170}));
       connect(sTG_3LRh.ActuatorsBus, hRSG.ActuatorsBus) annotation(
