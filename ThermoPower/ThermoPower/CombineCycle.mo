@@ -865,7 +865,7 @@ This is a simple model of a steam plant.
       inner System system(allowFlowReversal = false, initOpt = ThermoPower.Choices.Init.Options.steadyState) annotation(
         Placement(transformation(extent = {{240, 160}, {260, 180}})));
       Modelica.Blocks.Sources.Ramp powerSetPoint(duration = 0, startTime = 200, height = 5e6, offset = 155e6) annotation(
-        Placement(transformation(origin = {-98, 34}, extent = {{-440, 96}, {-420, 116}})));
+        Placement(transformation(origin = {-98, 36}, extent = {{-440, 96}, {-420, 116}})));
       Models.PID powerController(PVmin = 0, PVmax = 350e6, CSmax = 15, CSmin = 2, PVstart = 0.4857, CSstart = 0.3377, steadyStateInit = true, Kp = 2.5, Ti = 15) annotation(
         Placement(transformation(origin = {-168, 250}, extent = {{-300, -96}, {-280, -116}})));
       Modelica.Blocks.Sources.Step voidFractionSetPoint(offset = 0.2, height = 0, startTime = 0) annotation(
@@ -897,7 +897,7 @@ This is a simple model of a steam plant.
       connect(fuelFlowActuator.u, powerController.CS) annotation(
         Line(points = {{-405, 143}, {-448, 143}, {-448, 144}}, color = {0, 0, 127}));
       connect(powerController.SP, powerSetPoint.y) annotation(
-        Line(points = {{-468, 140}, {-517, 140}}, color = {0, 0, 127}));
+        Line(points = {{-468, 140}, {-492.5, 140}, {-492.5, 142}, {-517, 142}}, color = {0, 0, 127}));
       connect(fuelFlowActuator.y, SourceW1.in_w0) annotation(
         Line(points = {{-389, 143}, {-360.2, 143}, {-360.2, 114}, {-357, 114}}, color = {0, 0, 127}));
       connect(SourceW1.flange, CombustionChamber1.inf) annotation(

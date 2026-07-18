@@ -2931,7 +2931,7 @@ package PowerPlants "Models of thermoelectrical power plants components"
         connect(flowSplit2.out1, Ec_HP.waterIn) annotation(
           Line(points = {{-116, 160}, {-116, 150}, {40, 150}, {40, 10}}, thickness = 0.5, color = {0, 0, 255}));
         annotation(
-          Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-400, -200}, {400, 200}}), graphics));
+          Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-420, 220}, {420, -220}})));
       end HEG_2L;
 
       model HEG_2LRh "Heat Exchangers Group with two pressure level and reheat"
@@ -7287,7 +7287,7 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
         Components.PowerSensor powerSensor_A annotation(
           Placement(transformation(extent = {{10, 90}, {30, 110}}, rotation = 0)));
         Components.FrequencySensor frequencySensor_A annotation(
-          Placement(transformation(extent = {{10, 160}, {30, 180}}, rotation = 0)));
+          Placement(transformation(extent = {{10, 160}, {30, 180}})));
         Components.PowerSensor powerSensor_B annotation(
           Placement(transformation(extent = {{10, -110}, {30, -90}}, rotation = 0)));
         Components.FrequencySensor frequencySensor_B annotation(
@@ -7466,7 +7466,7 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
         ThermoPower.Electrical.FrequencySensor frequencySensor annotation(
           Placement(transformation(extent = {{20, 40}, {40, 60}}, rotation = 0)));
         ThermoPower.Electrical.Generator generator(eta = eta, J = J_shaft, initOpt = if SSInit then ThermoPower.Choices.Init.Options.steadyState else ThermoPower.Choices.Init.Options.noInit) annotation(
-          Placement(transformation(extent = {{-100, -30}, {-40, 30}}, rotation = 0)));
+          Placement(transformation(extent = {{-100, -30}, {-40, 30}})));
         ThermoPower.Electrical.NetworkGrid_Pmax network(hasBreaker = true, Pmax = Pmax, J = J_shaft, deltaStart = delta_start, fnom = fn, r = r_electrical, initOpt = if SSInit then ThermoPower.Choices.Init.Options.steadyState else ThermoPower.Choices.Init.Options.noInit) annotation(
           Placement(transformation(extent = {{80, -20}, {120, 20}}, rotation = 0)));
         Modelica.Mechanics.Rotational.Components.Damper damper(d = d_shaft, phi_rel(fixed = true)) annotation(
@@ -7477,7 +7477,7 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
         connect(SensorsBus.power, powerSensor.W) annotation(
           Line(points = {{200, -80}, {30, -80}, {30, -9.4}}, color = {255, 170, 213}));
         connect(SensorsBus.frequency, frequencySensor.f) annotation(
-          Line(points = {{200, -80}, {60, -80}, {60, 50}, {40.2, 50}}, color = {255, 170, 213}));
+          Line(points = {{200, -80}, {60, -80}, {60, 50}, {40.2, 50}}, color = {255, 85, 255}, thickness = 0.5));
         connect(generator.shaft, shaft) annotation(
           Line(points = {{-95.8, 5.32907e-016}, {-100, 5.32907e-016}, {-100, 0}, {-200, 0}}, color = {0, 0, 0}, thickness = 0.5));
         connect(generator.powerConnection, powerSensor.port_a) annotation(
@@ -7487,13 +7487,13 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
         connect(network.powerConnection, powerSensor.port_b) annotation(
           Line(points = {{80, 3.55271e-016}, {40, 3.55271e-016}, {40, -0.2}}, thickness = 0.5));
         connect(ActuatorsBus.ConnectedGenerator, network.closed) annotation(
-          Line(points = {{200, -140}, {140, -140}, {140, 40}, {100, 40}, {100, 19.4}}, color = {213, 255, 170}));
+          Line(points = {{200, -140}, {140, -140}, {140, 40}, {100, 40}, {100, 19.4}}, color = {85, 170, 127}, thickness = 0.5));
         connect(damper.flange_a, shaft) annotation(
           Line(points = {{-100, -50}, {-140, -50}, {-140, 0}, {-200, 0}}, color = {0, 0, 0}, thickness = 0.5));
         connect(fixed.flange, damper.flange_b) annotation(
           Line(points = {{-40, -76}, {-40, -50}, {-80, -50}}, color = {0, 0, 0}, thickness = 0.5));
         connect(SensorsBus.loadedAngle, network.delta_out) annotation(
-          Line(points = {{200, -80}, {100, -80}, {100, -18}}, color = {255, 170, 213}));
+          Line(points = {{200, -80}, {100, -80}, {100, -18}}, color = {255, 85, 255}, thickness = 0.5));
         annotation(
           Diagram(graphics));
       end GeneratorGroup;
@@ -8091,7 +8091,7 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
       inner System system(allowFlowReversal = false) annotation(
         Placement(transformation(extent = {{180, 180}, {200, 200}})));
       HRSG.Examples.HRSG_3LRh hRSG(SSInit = true, drums(fluidHPNomPressure = 12211600, fluidIPNomPressure = 2636940, fluidLPNomPressure = 604700), HeatExchangersGroup(fluidHPNomFlowRate_Sh = 62.8, fluidHPNomFlowRate_Ec = 64.5, fluidIPNomFlowRate_Rh = 77.36, fluidIPNomFlowRate_Sh = 14.5, fluidIPNomFlowRate_Ec = 13.5, fluidLPNomFlowRate_Sh = 10.95, fluidLPNomFlowRate_Ec = 89.8, Sh_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficientTwoGrids(gamma = 30)), Ec_LP(redeclare model HeatTransfer_F = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 3000), redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficientTwoGrids(gamma = 35)), Ev_LP(redeclare model HeatTransfer_G = ThermoPower.Thermal.HeatTransferFV.ConstantHeatTransferCoefficient(gamma = 60)), Sh1HP_Rh1IP(FFtype_F_B = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, Kfnom_F_B = 150, dpnom_F_B = 0.3e5), Sh2HP_Rh2IP(FFtype_F_B = ThermoPower.Choices.Flow1D.FFtypes.Kfnom, Kfnom_F_B = 150, dpnom_F_B = 0.3e5), fluidHPNomPressure_Sh = 12211600, fluidHPNomPressure_Ev = 12211600, fluidHPNomPressure_Ec = 12211600, fluidIPNomPressure_Rh = 2636940, fluidIPNomPressure_Sh = 2636940, fluidIPNomPressure_Ev = 2636940, fluidIPNomPressure_Ec = 2636940, fluidLPNomPressure_Sh = 604740, fluidLPNomPressure_Ev = 604740, fluidLPNomPressure_Ec = 604740, Sh2_HP_Tstartbar = 800, Sh1_HP_Tstartbar = 800, Ev_HP_Tstartbar = 700, Ec2_HP_Tstartbar = 600, Sh_IP_Tstartbar = 600, Ev_IP_Tstartbar = 550, Ec_IP_Tstartbar = 500, Sh_LP_Tstartbar = 550, Ev_LP_Tstartbar = 500, Ec_LP_Tstartbar = 450)) annotation(
-        Placement(transformation(extent = {{-120, 20}, {-20, 120}}, rotation = 0)));
+        Placement(transformation(origin = {0, -4}, extent = {{-120, 20}, {-20, 120}})));
       SteamTurbineGroup.Examples.STG_3LRh_valve_cc sTG_3LRh(steamTurbines(steamHPNomFlowRate = 62.8, steamIPNomFlowRate = 14.5, steamLPNomFlowRate = 10.9, ST_HP(pnom = 120e5), ST_IP(pnom = 28e5), ST_LP(pnom = 6.5e5), steamHPNomPressure = 12202000, steamIPNomPressure = 2636810, steamLPNomPressure = 604700, SSInit = true), totalFeedPump(SSInit = true, nominalOutletPressure = 604700)) annotation(
         Placement(transformation(extent = {{-120, -180}, {-20, -80}}, rotation = 0)));
       HRSG.Control.levelsControl levelsControl(CSmin_levelHP = 30, CSmax_levelHP = 96, CSmin_levelIP = 5, CSmax_levelIP = 25, Level_HP(steadyStateInit = true), Level_IP(steadyStateInit = true), Level_LP(steadyStateInit = true), CSmax_levelLP = 2400) annotation(
@@ -8115,13 +8115,13 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
         Placement(transformation(extent = {{100, -60}, {80, -40}}, rotation = 0)));
     equation
       connect(sTG_3LRh.WaterOut, hRSG.WaterIn) annotation(
-        Line(points = {{-30, -80}, {-30, -32}, {-30, 20}}, thickness = 0.5, color = {0, 0, 255}));
+        Line(points = {{-30, -80}, {-30, 16}}, color = {0, 0, 255}, thickness = 0.5));
       connect(sTG_3LRh.From_SH_LP, hRSG.Sh_LP_Out) annotation(
-        Line(points = {{-50, -80}, {-50, -32}, {-50, 20}}, thickness = 0.5, color = {0, 0, 255}));
+        Line(points = {{-50, -80}, {-50, 16}}, color = {0, 0, 255}, thickness = 0.5));
       connect(sTG_3LRh.From_RH_IP, hRSG.Rh_IP_Out) annotation(
-        Line(points = {{-80, -80}, {-80, -32}, {-80, 20}}, thickness = 0.5, color = {0, 0, 255}));
+        Line(points = {{-80, -80}, {-80, 16}}, color = {0, 0, 255}, thickness = 0.5));
       connect(sTG_3LRh.From_SH_HP, hRSG.Sh_HP_Out) annotation(
-        Line(points = {{-110, -80}, {-110, -32}, {-110, 20}}, thickness = 0.5, color = {0, 0, 255}));
+        Line(points = {{-110, -80}, {-110, 16}}, color = {0, 0, 255}, thickness = 0.5));
       connect(ramp.y, sourceGas.in_w0) annotation(
         Line(points = {{-169, 100}, {-156, 100}, {-156, 65}}, color = {0, 0, 127}));
       connect(valveHP_com.y, actuators1.Opening_valveHP) annotation(
@@ -8131,21 +8131,21 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
       connect(valveLP_com.y, actuators1.Opening_valveLP) annotation(
         Line(points = {{139, -10}, {90, -10}, {90, -50}}, color = {0, 0, 127}));
       connect(sTG_3LRh.To_RH_IP, hRSG.Rh_IP_In) annotation(
-        Line(points = {{-95, -80}, {-94, -30}, {-94, 20}, {-95, 20}}, thickness = 0.5, color = {0, 0, 255}));
+        Line(points = {{-95, -80}, {-95, -30}, {-94, -30}, {-94, 16}, {-95, 16}}, color = {0, 0, 255}, thickness = 0.5));
       connect(levelsControl.SensorsBus, hRSG.SensorsBus) annotation(
-        Line(points = {{40, 130}, {0, 130}, {0, 110}, {-20, 110}}, color = {255, 170, 213}));
+        Line(points = {{40, 130}, {0, 130}, {0, 106}, {-20, 106}}, color = {255, 170, 213}));
       connect(hRSG.SensorsBus, sTG_3LRh.SensorsBus) annotation(
-        Line(points = {{-20, 110}, {0, 110}, {0, -150}, {-20, -150}}, color = {255, 170, 213}));
+        Line(points = {{-20, 106}, {0, 106}, {0, -150}, {-20, -150}}, color = {255, 170, 213}));
       connect(sTG_3LRh.ActuatorsBus, hRSG.ActuatorsBus) annotation(
-        Line(points = {{-20, -165}, {-6, -165}, {-6, 95}, {-20, 95}}, color = {213, 255, 170}));
+        Line(points = {{-20, -165}, {-6, -165}, {-6, 91}, {-20, 91}}, color = {85, 170, 0}, thickness = 0.75));
       connect(actuators1, hRSG.ActuatorsBus) annotation(
-        Line(points = {{90, -50}, {-6, -50}, {-6, 95}, {-20, 95}}, color = {213, 255, 170}));
+        Line(points = {{90, -50}, {-6, -50}, {-6, 91}, {-20, 91}}, color = {85, 170, 0}, thickness = 0.5));
       connect(levelsControl.ActuatorsBus, hRSG.ActuatorsBus) annotation(
-        Line(points = {{100, 130}, {120, 130}, {120, 95}, {-20, 95}}, color = {213, 255, 170}));
+        Line(points = {{100, 130}, {120, 130}, {120, 91}, {-20, 91}}, color = {85, 170, 0}, thickness = 0.5));
       connect(sinkGas.flange, hRSG.GasOut) annotation(
-        Line(points = {{40, 60}, {10, 60}, {-20, 60}}, color = {159, 159, 223}, thickness = 0.5));
+        Line(points = {{40, 60}, {10, 60}, {10, 56}, {-20, 56}}, color = {159, 159, 223}, thickness = 0.5));
       connect(hRSG.GasIn, sourceGas.flange) annotation(
-        Line(points = {{-120, 60}, {-130, 60}, {-140, 60}}, color = {159, 159, 223}, thickness = 0.5));
+        Line(points = {{-120, 56}, {-130, 56}, {-130, 60}, {-140, 60}}, color = {159, 159, 223}, thickness = 0.5));
       connect(booleanConstant.y, actuators1.ConnectedGenerator) annotation(
         Line(points = {{139, -50}, {90, -50}}, color = {255, 0, 255}, smooth = Smooth.None));
       connect(singleShaft.shaft, sTG_3LRh.Shaft_b) annotation(
@@ -8153,7 +8153,7 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
       connect(sTG_3LRh.SensorsBus, singleShaft.SensorsBus) annotation(
         Line(points = {{-20, -150}, {20, -150}, {20, -190}, {160, -190}, {160, -150}, {140, -150}}, color = {255, 170, 213}));
       connect(singleShaft.ActuatorsBus, sTG_3LRh.ActuatorsBus) annotation(
-        Line(points = {{140, -165}, {152, -165}, {152, -184}, {14, -184}, {14, -165}, {-20, -165}}, color = {213, 255, 170}));
+        Line(points = {{140, -165}, {152, -165}, {152, -184}, {14, -184}, {14, -165}, {-20, -165}}, color = {85, 170, 0}, thickness = 0.5));
       annotation(
         Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-200, -200}, {200, 200}}, initialScale = 0.1), graphics),
         experiment(StopTime = 6000, NumberOfIntervals = 3000, Tolerance = 1e-006),
@@ -8277,7 +8277,7 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
       Gas.SinkPressure sinkGas(redeclare package Medium = FlueGasMedium, T = 362.309) annotation(
         Placement(transformation(extent = {{96, 2}, {116, 22}}, rotation = 0)));
       ElectricGeneratorGroup.Examples.GeneratorGroup singleShaft(eta = 0.9, J_shaft = 15000, d_shaft = 25, Pmax = 150e6, SSInit = true, delta_start = 0.7) annotation(
-        Placement(transformation(extent = {{100, -160}, {180, -80}}, rotation = 0)));
+        Placement(transformation(extent = {{100, -160}, {180, -80}})));
       SteamTurbineGroup.Examples.STG_3LRh_valve_cc sTG_3LRh(steamTurbines(steamHPNomFlowRate = 62.8, steamIPNomFlowRate = 14.5, steamLPNomFlowRate = 10.9, ST_HP(pnom = 120e5), ST_IP(pnom = 28e5), ST_LP(pnom = 6.5e5), steamHPNomPressure = 12202000, steamIPNomPressure = 2636810, steamLPNomPressure = 604700), totalFeedPump(nominalOutletPressure = 604700), SSInit = true) annotation(
         Placement(transformation(extent = {{-20, -160}, {60, -80}})));
       HRSG.Control.levelsControl levelsControl(CSmin_levelHP = 30, CSmax_levelHP = 96, CSmin_levelIP = 5, CSmax_levelIP = 25, Level_HP(steadyStateInit = true), Level_IP(steadyStateInit = true), Level_LP(steadyStateInit = true), CSmax_levelLP = 2400) annotation(
@@ -8315,19 +8315,19 @@ Model of <b>fixed</b> angular verlocity of flange, not dependent on torque.
       connect(hRSG.SensorsBus, levelsControl.SensorsBus) annotation(
         Line(points = {{60, 52}, {80, 52}, {80, 90}, {100, 90}}, color = {0, 74, 222}, thickness = 0.5));
       connect(sTG_3LRh.SensorsBus, hRSG.SensorsBus) annotation(
-        Line(points = {{60, -136}, {80, -136}, {80, 52}, {60, 52}}, color = {255, 170, 213}));
+        Line(points = {{60, -136}, {80, -136}, {80, 52}, {60, 52}}, color = {131, 87, 110}, thickness = 0.5));
       connect(singleShaft.SensorsBus, hRSG.SensorsBus) annotation(
-        Line(points = {{180, -136}, {200, -136}, {200, -40}, {80, -40}, {80, 52}, {60, 52}}, color = {255, 170, 213}));
+        Line(points = {{180, -136}, {200, -136}, {200, -40}, {80, -40}, {80, 52}, {60, 52}}, color = {134, 89, 112}, thickness = 0.5));
       connect(hRSG.ActuatorsBus, levelsControl.ActuatorsBus) annotation(
         Line(points = {{60, 40}, {180, 40}, {180, 90}, {160, 90}}, color = {213, 255, 170}));
       connect(levelsControl.ActuatorsBus, actuators) annotation(
         Line(points = {{160, 90}, {180, 90}, {180, 140}, {-40, 140}, {-40, 110}, {-80, 110}}, color = {0, 74, 223}, thickness = 0.5));
       connect(sTG_3LRh.ActuatorsBus, singleShaft.ActuatorsBus) annotation(
-        Line(points = {{60, -148}, {72, -148}, {72, -178}, {190, -178}, {190, -148}, {180, -148}}, color = {213, 255, 170}));
+        Line(points = {{60, -148}, {72, -148}, {72, -178}, {190, -178}, {190, -148}, {180, -148}}, color = {113, 135, 90}, thickness = 0.5));
       connect(sTG_3LRh.ActuatorsBus, hRSG.ActuatorsBus) annotation(
-        Line(points = {{60, -148}, {70, -148}, {70, 40}, {60, 40}}, color = {213, 255, 170}));
+        Line(points = {{60, -148}, {70, -148}, {70, 40}, {60, 40}}, color = {111, 132, 88}, thickness = 0.5));
       annotation(
-        Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-200, -200}, {200, 200}}, initialScale = 0.1), graphics),
+        Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-180, 200}, {200, -180}}, initialScale = 0.1)),
         experiment(StopTime = 7000, NumberOfIntervals = 3000, Tolerance = 1e-006),
         Documentation(revisions = "<html>
 <ul>
